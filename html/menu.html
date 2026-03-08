@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniDeportes – Menú Principal</title>
+  <meta name="description" content="Reserva escenarios deportivos en la Universidad del Magdalena. Canchas de Sintética, Tenis, Baloncesto y Voleibol." />
+  <link rel="stylesheet" href="../css/menu.css" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <span class="nav-logo-text">UniDeportes</span>
+    </a>
+
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#deportes" class="active">Canchas</a></li>
+        <li><a href="#">Mis Reservas</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+      <a href="#deportes" class="btn-reservar">Reservar</a>
+      <div class="avatar-placeholder" title="Mi perfil">U</div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1 class="hero-title">Reserva tus escenarios<br>en minutos...</h1>
+      <p class="hero-desc">
+        Consulta disponibilidad en tiempo real y agenda sin complicaciones.
+      </p>
+      <div class="hero-actions">
+        <a href="#deportes" class="btn-agendar">Agendar</a>
+        <a href="#ubicacion" class="btn-como">Como funciona</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <!-- Deportes disponibles -->
+    <section id="deportes">
+      <h2 class="section-title">Deportes disponibles</h2>
+      <p class="section-subtitle">Selecciona un deporte para ver las canchas disponibles a reservar</p>
+
+      <div class="sports-grid">
+
+        <!-- Sintética -->
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha sintética"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Sintética</p>
+            <a href="#" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <!-- Tenis -->
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de tenis"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Tenis</p>
+            <a href="#" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <!-- Baloncesto -->
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de baloncesto"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Baloncesto</p>
+            <a href="#" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <!-- Voleibol -->
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de voleibol"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Voleibol</p>
+            <a href="#" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Ubicación -->
+    <section id="ubicacion" class="location-section">
+      <div class="location-info">
+        <h2>Nuestra<br>ubicacion</h2>
+        <p>
+          Carrera 32 No 22-08,<br>
+          Santa Marta, Magdalena<br>
+          470004
+        </p>
+        <a
+          href="https://maps.app.goo.gl/iuD1MHD24KqgGoSbA"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-mapa"
+        >
+          Ir al mapa →
+        </a>
+      </div>
+
+      <div class="map-container">
+        <iframe
+          title="Ubicación Universidad del Magdalena"
+          src="https://maps.google.com/maps?q=Universidad+del+Magdalena,+Carrera+32+No+22-08,+Santa+Marta,+Magdalena&output=embed&hl=es"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-grid">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <div class="footer-info">
+        <p class="footer-names">
+          Camilo Monsalve <span>•</span>
+          Valentina Masso <span>•</span>
+          Camilo Serpa
+        </p>
+        <p class="footer-project">Proyecto web 2026</p>
+      </div>
+    </div>
+
+    <div class="footer-right">
+      <img
+        src="../assets/logo.png"
+        alt="Universidad del Magdalena"
+      />
+    </div>
+  </footer>
+
+</body>
+</html>
