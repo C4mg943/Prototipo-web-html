@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+/* ─── Layout Principal ─── */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a7a7a 0%, #0d5f6e 40%, #0a4a5e 70%, #0d3b50 100%);
+}
+
+/* ─── Header ─── */
+.header {
+  padding: 20px 80px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.logo-icon {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: 28px;
+  height: 28px;
+}
+
+.logo-icon span {
+  background: #fff;
+  border-radius: 3px;
+  display: block;
+}
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #fff;
+}
+
+/* ─── Main Content ─── */
+.main-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 80px 60px 80px;
+  gap: 48px;
+  width: 100%;
+}
+
+/* ─── Hero Text ─── */
+.hero {
+  flex: 0 0 auto;
+  width: 45%;
+  max-width: 520px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 340px;
+}
+
+.btn-hero {
+  display: inline-block;
+  padding: 12px 28px;
+  border: 2px solid rgba(255,255,255,0.85);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s;
+  cursor: pointer;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-hero:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ─── Login Card ─── */
+.login-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: #0f1a2e;
+  margin-bottom: 6px;
+}
+
+.card-subtitle {
+  font-size: 0.82rem;
+  color: #8a9ab0;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* ─── Form ─── */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 7px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  color: #a0aec0;
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: 'Inter', sans-serif;
+  color: #2d3748;
+  background: #f8fafc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #0d9c9c;
+  box-shadow: 0 0 0 3px rgba(13, 156, 156, 0.12);
+  background: #fff;
+}
+
+.form-input::placeholder {
+  color: #b0bec5;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 14px;
+  color: #a0aec0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password:hover {
+  color: #4a5568;
+}
+
+/* ─── Options Row ─── */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.remember-me input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #0d9c9c;
+  cursor: pointer;
+}
+
+.remember-me span {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.forgot-link {
+  font-size: 0.8rem;
+  color: #0d9c9c;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+/* ─── Submit Button ─── */
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: #0f1a2e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.25s, transform 0.1s;
+  letter-spacing: 0.2px;
+}
+
+.btn-login:hover {
+  background: #1a2e4a;
+}
+
+.btn-login:active {
+  transform: scale(0.99);
+}
+
+/* ─── Register Link ─── */
+.register-text {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #8a9ab0;
+  margin-top: 20px;
+}
+
+.register-link {
+  color: #0d9c9c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+/* ─── Footer ─── */
+.footer {
+  background: #0a2236;
+  padding: 24px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  width: 24px;
+  height: 24px;
+}
+
+.footer-grid span {
+  background: rgba(255,255,255,0.5);
+  border-radius: 2px;
+  display: block;
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-names {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.3px;
+}
+
+.footer-names span {
+  margin: 0 6px;
+  opacity: 0.4;
+}
+
+.footer-project {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.footer-right img {
+  height: 72px;
+  width: auto;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 24px;
+  }
+
+  .hero {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .hero-subtitle {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-title {
+    font-size: 2.6rem;
+  }
+
+  .login-card {
+    max-width: 100%;
+  }
+
+  .footer {
+    padding: 18px 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
