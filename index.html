@@ -34,6 +34,7 @@
       </section>
 
       <div class="login-card">
+        <!-- Formulario de login -->
         <h2 class="card-title">Bienvenido</h2>
         <p class="card-subtitle">Ingresa tus credenciales para acceder</p>
 
@@ -121,23 +122,7 @@
 
   </div>
 
-  <script>
-    const toggleBtn = document.getElementById('toggle-pwd');
-    const passwordInput = document.getElementById('password');
-    const eyeIcon = document.getElementById('eye-icon');
-
-    toggleBtn.addEventListener('click', () => {
-      const isHidden = passwordInput.type === 'password';
-      passwordInput.type = isHidden ? 'text' : 'password';
-      eyeIcon.className = isHidden ? 'ph ph-eye-slash' : 'ph ph-eye';
-    });
-
-    // Al enviar el formulario, redirige al menú principal
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      window.location.href = 'html/menu.html';
-    });
-  </script>
+  <script src="js/index.js" defer></script>
 
 </body>
 </html>
