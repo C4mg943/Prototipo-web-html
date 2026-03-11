@@ -24,6 +24,7 @@
         <li><a href="#deportes" class="active">Canchas</a></li>
         <li><a href="#">Mis Reservas</a></li>
         <li><a href="#">Contacto</a></li>
+        <li><a href="#" id="btn-logout" style="color: #e53e3e; font-weight: 600;">Cerrar sesión</a></li>
       </ul>
       <a href="#deportes" class="btn-reservar">Reservar</a>
       <div class="avatar-placeholder" title="Mi perfil">U</div>
@@ -43,10 +44,9 @@
     </div>
   </section>
 
-    <main class="main-content">
+  <main class="main-content">
 
-      <!-- Sección de deportes -->
-      <section id="deportes">
+    <section id="deportes">
       <h2 class="section-title">Deportes disponibles</h2>
       <p class="section-subtitle">Selecciona un deporte para ver las canchas disponibles a reservar</p>
 
@@ -60,7 +60,7 @@
           />
           <div class="sport-body">
             <p class="sport-name">Sintética</p>
-            <a href="cancha.html" class="btn-ver">Ver canchas</a>
+            <a href="#" class="btn-ver">Ver canchas</a>
           </div>
         </div>
 
@@ -72,7 +72,7 @@
           />
           <div class="sport-body">
             <p class="sport-name">Tenis</p>
-            <a href="cancha.html" class="btn-ver">Ver canchas</a>
+            <a href="#" class="btn-ver">Ver canchas</a>
           </div>
         </div>
 
@@ -84,7 +84,7 @@
           />
           <div class="sport-body">
             <p class="sport-name">Baloncesto</p>
-            <a href="cancha.html" class="btn-ver">Ver canchas</a>
+            <a href="#" class="btn-ver">Ver canchas</a>
           </div>
         </div>
 
@@ -96,14 +96,13 @@
           />
           <div class="sport-body">
             <p class="sport-name">Voleibol</p>
-            <a href="cancha.html" class="btn-ver">Ver canchas</a>
+            <a href="#" class="btn-ver">Ver canchas</a>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- Sección de ubicación -->
     <section id="ubicacion" class="location-section">
       <div class="location-info">
         <h2>Nuestra<br>ubicacion</h2>
@@ -159,5 +158,28 @@
     </div>
   </footer>
 
+  <script>
+    // Mostrar la inicial del usuario en el avatar
+    const savedName = localStorage.getItem('userName');
+    const avatar = document.querySelector('.avatar-placeholder');
+
+    if (savedName && avatar) {
+      avatar.textContent = savedName.charAt(0).toUpperCase();
+      avatar.title = `Perfil de ${savedName}`;
+    }
+
+    // Funcionalidad de Cerrar Sesión
+    document.getElementById('btn-logout').addEventListener('click', (e) => {
+      e.preventDefault();
+      const confirmar = confirm('¿Seguro que deseas cerrar sesión?');
+      
+      if (confirmar) {
+        // Borramos los datos del usuario actual
+        localStorage.removeItem('userName');
+        // Redirigimos al inicio de sesión
+        window.location.href = '../index.html';
+      }
+    });
+  </script>
 </body>
 </html>

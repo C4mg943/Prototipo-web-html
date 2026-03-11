@@ -373,3 +373,39 @@ html, body {
     gap: 12px;
   }
 }
+
+/* ── TOAST NOTIFICATIONS ── */
+.toast {
+  visibility: hidden;
+  min-width: 280px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 8px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.3s, bottom 0.3s, visibility 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
+
+.toast.error {
+  background-color: #e53e3e; /* Rojo para errores */
+}
+
+.toast.success {
+  background-color: #0d9c9c; /* Verde/Teal para éxito */
+}

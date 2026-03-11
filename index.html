@@ -10,6 +10,8 @@
 </head>
 <body>
 
+  <div id="toast" class="toast"></div>
+
   <div class="page-wrapper">
 
     <header class="header">
@@ -34,11 +36,10 @@
       </section>
 
       <div class="login-card">
-        <!-- Formulario de login -->
         <h2 class="card-title">Bienvenido</h2>
         <p class="card-subtitle">Ingresa tus credenciales para acceder</p>
 
-        <form id="login-form" novalidate action="html/menu.html">
+        <form id="login-form" novalidate>
 
           <div class="form-group">
             <label class="form-label" for="codigo">Código o correo educativo</label>
@@ -90,7 +91,7 @@
 
         <p class="register-text">
           ¿No tienes una cuenta?
-          <a href="#" class="register-link">Regístrate aquí</a>
+          <a href="html/registro.html" class="register-link">Regístrate aquí</a>
         </p>
       </div>
 
@@ -122,7 +123,53 @@
 
   </div>
 
-  <script src="js/index.js" defer></script>
+  <script>
+    // Función para mostrar las notificaciones Toast
+    function showToast(message, type = 'error') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      // Reinicia las clases y añade la animación
+      toast.className = `toast show ${type}`;
+      
+      // Ocultar después de 3 segundos
+      setTimeout(() => { 
+        toast.className = toast.className.replace('show', ''); 
+      }, 3000);
+    }
+
+    const toggleBtn = document.getElementById('toggle-pwd');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eye-icon');
+
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      eyeIcon.className = isHidden ? 'ph ph-eye-slash' : 'ph ph-eye';
+    });
+
+    // Lógica del Login
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const codigo = document.getElementById('codigo').value;
+      const password = document.getElementById('password').value;
+
+      if (codigo.trim() === "" || password.trim() === "") {
+        showToast("Por favor, ingresa tu código y contraseña.", "error");
+      } else {
+        // Si el usuario no se registró previamente, creamos un nombre genérico
+        if (!localStorage.getItem('userName')) {
+          localStorage.setItem('userName', 'Estudiante');
+        }
+        showToast("Iniciando sesión...", "success");
+        
+        // Pequeño retraso para que se vea el mensaje antes de cambiar de página
+        setTimeout(() => {
+          window.location.href = 'html/menu.html';
+        }, 800);
+      }
+    });
+  </script>
 
 </body>
 </html>
