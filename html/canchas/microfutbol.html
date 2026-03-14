@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniDeportes – Cancha Microfutbol #1</title>
+  <link rel="stylesheet" href="../../css/menu.css" />
+  <link rel="stylesheet" href="../../css/cancha.css" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+</head>
+<body data-sport="microfutbol">
+
+  <nav class="navbar">
+    <a href="../../index.html" class="nav-logo">
+      <div class="nav-logo-icon">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <span class="nav-logo-text">UniDeportes</span>
+    </a>
+
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="../../index.html">Canchas</a></li>
+        <li><a href="#">Mis Reservas</a></li>
+        <li><a href="../../en-construccion.html">Contacto</a></li>
+      </ul>
+      <div class="avatar-placeholder" style="background: transparent; border: none;">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=f0dfce" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0;">
+      </div>
+    </div>
+  </nav>
+
+  <main class="cancha-container">
+    
+    <div class="cancha-left">
+      <!-- Card izquierdo: imagen e información -->
+      <div class="header-image-card">
+        <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&auto=format&fit=crop&q=80" alt="Cancha Microfutbol #1" class="cancha-cover" />
+        <div class="header-image-overlay">
+          <h1>Cancha Microfutbol #1</h1>
+          <p><i class="ph-fill ph-map-pin"></i> Cancha de microfutbol</p>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-header">
+          <i class="ph ph-info" style="color: #3b82f6; font-size: 1.2rem;"></i>
+           Información y Contacto
+        </div>
+        <div class="info-card-body">
+          <div class="info-col">
+            <h3>Especificaciones</h3>
+            <ul class="specs-list">
+              <li><span class="dot"></span> Seguridad privada</li>
+              <li><span class="dot"></span> Gradas</li>
+              <li><span class="dot"></span> Baños cercanos</li>
+            </ul>
+          </div>
+          <div class="info-col">
+            <h3>Administración</h3>
+            <p class="phone"><i class="ph ph-phone"></i> +57 (605) 438-1000 Ext. 3050</p>
+            <p class="desc">Para eventos especiales o torneos, por favor contactar directamente con administración.</p>
+            <button class="btn-outline" onclick="window.open('https://sistemabienestar.unimagdalena.edu.co/Modulos/ReservasEscenariosGruposCD/Reservas.aspx', '_blank')">Contactar Soporte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cancha-right">
+      <!-- Card derecho: formulario de reserva -->
+      <div class="booking-card">
+        <div class="booking-header">
+          <h2><i class="ph ph-calendar-blank"></i> Disponibilidad</h2>
+          <p>Selecciona fecha y hora</p>
+        </div>
+        <div class="booking-body">
+          <input type="hidden" name="deporte" value="microfutbol">
+          
+          <div class="field-section">
+            <p class="section-label">Escoge cancha</p>
+            <div class="fields-grid">
+              <button class="field-btn active" onclick="selectField(this, 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 1')">Cancha 1</button>
+              <button class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 2')">Cancha 2</button>
+              <button class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1551280857-2b9bbe52ccbd?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 3')">Cancha 3</button>
+            </div>
+          </div>
+
+          <div class="date-section">
+            <p class="section-label">Fecha</p>
+            <div class="dates-list">
+              <div class="date-item" onclick="selectDate(this)">
+                <span class="day-name">DOM</span>
+                <span class="day-num">1</span>
+              </div>
+              <div class="date-item" onclick="selectDate(this)">
+                <span class="day-name">LUN</span>
+                <span class="day-num">2</span>
+              </div>
+              <div class="date-item" onclick="selectDate(this)">
+                <span class="day-name">MAR</span>
+                <span class="day-num">3</span>
+              </div>
+              <div class="date-item" onclick="selectDate(this)">
+                <span class="day-name">MIÉ</span>
+                <span class="day-num">4</span>
+              </div>
+              <div class="date-item" onclick="selectDate(this)">
+                <span class="day-name">JUE</span>
+                <span class="day-num">5</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="time-section">
+            <p class="section-label"><i class="ph ph-clock"></i> Horarios Disponibles</p>
+            <div class="times-grid">
+              <button class="time-btn" onclick="selectTime(this)">06:00 AM</button>
+              <button class="time-btn" onclick="selectTime(this)">07:00 AM</button>
+              <button class="time-btn" onclick="selectTime(this)">08:00 AM</button>
+              <button class="time-btn" onclick="selectTime(this)">09:00 AM</button>
+              <button class="time-btn" onclick="selectTime(this)">10:00 AM</button>
+              <button class="time-btn" onclick="selectTime(this)">11:00 AM</button>
+              <button class="time-btn" onclick="selectTime(this)">02:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">03:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">04:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">05:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">06:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">07:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">08:00 PM</button>
+              <button class="time-btn" onclick="selectTime(this)">09:00 PM</button>
+            </div>
+          </div>
+
+          <div class="equipment-section" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #e2e8f0; margin-bottom: 24px;">
+            <label class="equipment-checkbox" style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+              <input type="checkbox" name="prestar_equipacion" value="1" style="margin-top: 4px; width: 18px; height: 18px; accent-color: #204184;">
+              <div>
+                <span style="font-size: 0.9rem; font-weight: 600; color: #1a202c; display: block; margin-bottom: 4px;">¿Desea prestar equipación?</span>
+                <span style="font-size: 0.8rem; color: #718096; display: block;">Balones, petos u otros implementos necesarios.</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="booking-summary">
+            <button class="btn-agendar-large" onclick="agendarReserva()">AGENDAR</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-grid">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <div class="footer-info">
+        <p class="footer-names">
+          Camilo Monsalve <span>•</span>
+          Valentina Masso <span>•</span>
+          Camilo Serpa
+        </p>
+        <p class="footer-project">Proyecto web 2026</p>
+      </div>
+    </div>
+
+    <div class="footer-right">
+      <img src="../../assets/logo.png" alt="Universidad del Magdalena" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Logo_de_la_Universidad_del_Magdalena.svg/1024px-Logo_de_la_Universidad_del_Magdalena.svg.png'" />
+    </div>
+  </footer>
+
+  <script src="../../js/cancha.js" defer></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fieldItems = document.querySelectorAll('.field-item');
+      const canchaCover = document.querySelector('.cancha-cover');
+      const headerTitle = document.querySelector('.header-image-overlay h1');
+      const docTitle = document.querySelector('title');
+
+      fieldItems.forEach(item => {
+        const radio = item.querySelector('input[type="radio"]');
+        
+        radio.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            // Remove active class from all
+            fieldItems.forEach(lbl => lbl.classList.remove('active'));
+            // Add active class to selected item
+            item.classList.add('active');
+            
+            // Extract the new image and title
+            const newImg = item.getAttribute('data-image');
+            const newName = item.getAttribute('data-name');
+            
+            // Update the DOM elements
+            if(canchaCover) canchaCover.src = newImg;
+            if(headerTitle) headerTitle.innerHTML = newName;
+            if(docTitle) docTitle.textContent = `UniDeportes – ${newName}`;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

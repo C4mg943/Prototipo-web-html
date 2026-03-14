@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniDeportes – En Construcción</title>
+  <meta name="description" content="Página en construcción de la plataforma de reserva de escenarios deportivos." />
+  <link rel="stylesheet" href="../css/style.css" />
+  <!-- Phosphor Icons para la pala, conos, etc -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+  
+  <style>
+    /* Estilos propios para la página de construcción */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f8fafc; /* Gris claro */
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .main-header {
+      background: #204184; /* Azul UNIMAGDALENA */
+      padding: 1rem 5%;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-container img {
+      height: 40px;
+    }
+    
+    .construction-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .construction-content {
+      background: white;
+      padding: 4rem 3rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .icons-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    /* Animación sutil de rebote para los conos y la barricada */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .construction-content h1 {
+      font-size: 2.2rem;
+      color: #1a202c;
+      margin-bottom: 16px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .construction-content p {
+      font-size: 1.1rem;
+      color: #718096;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .btn-volver {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: #204184;
+      color: white;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(32, 65, 132, 0.25);
+    }
+
+    .btn-volver:hover {
+      background: #183266;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(32, 65, 132, 0.35);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Institucional Básico -->
+  <header class="main-header">
+    <div class="logo-container">
+      <img src="../assets/logo.png" alt="Universidad del Magdalena" style="height: 40px; object-fit: contain;" />
+    </div>
+  </header>
+
+  <!-- Contenido Central de Construcción -->
+  <main class="construction-container">
+    <div class="construction-content">
+      
+      <!-- Iconos ilustrativos de construcción -->
+      <div class="icons-wrapper">
+        <i class="ph-fill ph-traffic-cone" style="font-size: 4rem; color: #f97316;"></i>
+        <i class="ph-duotone ph-barricade" style="font-size: 5.5rem; color: #f59e0b;"></i>
+        <i class="ph-fill ph-traffic-cone" style="font-size: 4rem; color: #f97316;"></i>
+      </div>
+
+      <h1>Estamos trabajando para ti</h1>
+      <p>Este escenario o módulo actualmente <strong>está en proceso de construcción</strong> y mantenimiento. Nos estamos asegurando de que todo quede perfecto.<br><br>Por favor, espera un poco más y vuelve pronto.</p>
+
+      <a href="../index.html" class="btn-volver">
+        <i class="ph-bold ph-arrow-left"></i>
+        Volver al Inicio
+      </a>
+
+    </div>
+  </main>
+
+</body>
+</html>

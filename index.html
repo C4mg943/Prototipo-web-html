@@ -3,126 +3,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UniDeportes – Reserva tus escenarios</title>
-  <meta name="description" content="Plataforma de reserva de escenarios deportivos de la Universidad del Magdalena. Accede con tu cuenta institucional." />
-  <link rel="stylesheet" href="css/style.css" />
+  <title>UniDeportes – Menú Principal</title>
+  <meta name="description" content="Reserva escenarios deportivos en la Universidad del Magdalena. Canchas de Sintética, Tenis, Baloncesto y Voleibol." />
+  <link rel="stylesheet" href="../css/menu.css" />
   <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
 </head>
 <body>
 
-  <div class="page-wrapper">
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <span class="nav-logo-text">UniDeportes</span>
+    </a>
 
-    <header class="header">
-      <a href="#" class="logo">
-        <div class="logo-icon">
-          <span></span><span></span>
-          <span></span><span></span>
-        </div>
-        <span class="logo-text">UniDeportes</span>
-      </a>
-    </header>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#deportes" class="active">Canchas</a></li>
+        <li><a href="#">Mis Reservas</a></li>
+        <li><a href="html/en-construccion.html">Contacto</a></li>
+      </ul>
+      <a href="#deportes" class="btn-reservar">Reservar</a>
+      <div class="avatar-placeholder" title="Mi perfil">U</div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1 class="hero-title">Reserva tus escenarios<br>en minutos...</h1>
+      <p class="hero-desc">
+        Consulta disponibilidad en tiempo real y agenda sin complicaciones.
+      </p>
+      <div class="hero-actions">
+        <a href="html/en-construccion.html" class="btn-agendar">Agendar</a>
+        <a href="html/en-construccion.html" class="btn-como">Como funciona</a>
+      </div>
+    </div>
+  </section>
 
     <main class="main-content">
 
-      <section class="hero">
-        <h1 class="hero-title">Reserva tus escenarios</h1>
-        <p class="hero-subtitle">
-          Consulta disponibilidad en tiempo real y agenda sin complicaciones.
-          Accede con tu cuenta institucional.
-        </p>
-        <button class="btn-hero" type="button">Saber más</button>
-      </section>
+      <!-- Sección de deportes -->
+      <section id="deportes">
+      <h2 class="section-title">Deportes disponibles</h2>
+      <p class="section-subtitle">Selecciona un deporte para ver las canchas disponibles a reservar</p>
 
-      <div class="login-card">
-        <!-- Formulario de login -->
-        <h2 class="card-title">Bienvenido</h2>
-        <p class="card-subtitle">Ingresa tus credenciales para acceder</p>
+      <div class="sports-grid">
 
-        <form id="login-form" novalidate action="html/menu.html">
-
-          <div class="form-group">
-            <label class="form-label" for="codigo">Código o correo educativo</label>
-            <div class="input-wrapper">
-              <i class="input-icon ph ph-user"></i>
-              <input
-                id="codigo"
-                class="form-input"
-                type="text"
-                placeholder="Correo o Código"
-                autocomplete="username"
-              />
-            </div>
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de fútbol"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Fútbol</p>
+            <a href="html/canchas/futbol.html" class="btn-ver">Ver canchas</a>
           </div>
-
-          <div class="form-group">
-            <label class="form-label" for="password">Contraseña</label>
-            <div class="input-wrapper">
-              <i class="input-icon ph ph-lock-simple"></i>
-              <input
-                id="password"
-                class="form-input"
-                type="password"
-                placeholder="••••••••"
-                autocomplete="current-password"
-              />
-              <button
-                type="button"
-                class="toggle-password"
-                id="toggle-pwd"
-                aria-label="Mostrar contraseña"
-              >
-                <i class="ph ph-eye" id="eye-icon"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="form-options">
-            <label class="remember-me" for="remember">
-              <input type="checkbox" id="remember" />
-              <span>Recordarme</span>
-            </label>
-            <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
-          </div>
-
-          <button type="submit" class="btn-login">Iniciar sesión</button>
-
-        </form>
-
-        <p class="register-text">
-          ¿No tienes una cuenta?
-          <a href="#" class="register-link">Regístrate aquí</a>
-        </p>
-      </div>
-
-    </main>
-
-    <footer class="footer">
-      <div class="footer-left">
-        <div class="footer-grid">
-          <span></span><span></span>
-          <span></span><span></span>
         </div>
-        <div class="footer-info">
-          <p class="footer-names">
-            Camilo Monsalve <span>•</span>
-            Valentina Masso <span>•</span>
-            Camilo Serpa
-          </p>
-          <p class="footer-project">Proyecto web 2026</p>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de microfútbol"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Microfutbol</p>
+            <a href="html/canchas/microfutbol.html" class="btn-ver">Ver canchas</a>
+          </div>
         </div>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de tenis"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Tenis</p>
+            <a href="html/canchas/tenis.html" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de voleibol"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Voleibol</p>
+            <a href="html/canchas/voleibol.html" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1565992441121-4367c2967103?w=600&auto=format&fit=crop&q=70"
+            alt="Pista de patinaje"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Patinaje</p>
+            <a href="html/canchas/patinaje.html" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&auto=format&fit=crop&q=70"
+            alt="Pista de atletismo"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Atletismo</p>
+            <a href="html/canchas/atletismo.html" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1534120187762-760c454f308a?w=600&auto=format&fit=crop&q=70"
+            alt="Campo de softball"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Softball</p>
+            <a href="html/canchas/softball.html" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+        <div class="sport-card">
+          <img
+            class="sport-img"
+            src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=70"
+            alt="Cancha de baloncesto"
+          />
+          <div class="sport-body">
+            <p class="sport-name">Baloncesto</p>
+            <a href="html/canchas/baloncesto.html" class="btn-ver">Ver canchas</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Sección de ubicación -->
+    <section id="ubicacion" class="location-section">
+      <div class="location-info">
+        <h2>Nuestra<br>ubicacion</h2>
+        <p>
+          Carrera 32 No 22-08,<br>
+          Santa Marta, Magdalena<br>
+          470004
+        </p>
+        <a
+          href="https://maps.app.goo.gl/iuD1MHD24KqgGoSbA"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-mapa"
+        >
+          Ir al mapa →
+        </a>
       </div>
 
-      <div class="footer-right">
-        <img
-          src="assets/logo.png"
-          alt="Universidad del Magdalena"
-        />
+      <div class="map-container">
+        <div id="map"></div>
       </div>
-    </footer>
 
-  </div>
+    </section>
 
-  <script src="js/index.js" defer></script>
+  </main>
 
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-grid">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <div class="footer-info">
+        <p class="footer-names">
+          Camilo Monsalve <span>•</span>
+          Valentina Masso <span>•</span>
+          Camilo Serpa
+        </p>
+        <p class="footer-project">Proyecto web 2026</p>
+      </div>
+    </div>
+
+    <div class="footer-right">
+      <img
+        src="../assets/logo.png"
+        alt="Universidad del Magdalena"
+      />
+    </div>
+  </footer>
+  <script src="js/map.js"></script>
+  <script>
+    function loadGoogleMaps() {
+      const script = document.createElement('script');
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAPR5PDh1qrXQZWNZpmmEhhYEq0sSKMzbY&callback=initMap';
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    window.addEventListener('load', loadGoogleMaps);
+  </script>
 </body>
 </html>

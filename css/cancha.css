@@ -9,8 +9,8 @@
 }
 
 @media (max-width: 900px) {
-/* Grid de 2 columnas */
-.cancha-container {
+  /* Grid de 2 columnas */
+  .cancha-container {
     grid-template-columns: 1fr;
   }
 }
@@ -27,7 +27,7 @@
   height: 400px;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .cancha-cover {
@@ -42,7 +42,38 @@
   left: 0;
   right: 0;
   padding: 80px 32px 32px;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  color: #fff;
+}
+
+.info-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 32px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.cancha-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 80px 32px 32px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
   color: #fff;
 }
 
@@ -58,14 +89,14 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .info-card {
   background: #fff;
   border-radius: 16px;
   padding: 24px 32px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .info-card-header {
@@ -156,7 +187,7 @@
 .booking-card {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   height: 100%;
 }
@@ -180,11 +211,53 @@
 
 .booking-header p {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .booking-body {
-  padding: 28px;
+  padding: 20px 24px 20px;
+}
+
+.fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.field-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field-item input[type="radio"] {
+  display: none;
+}
+
+.field-item:hover {
+  border-color: #a0aec0;
+  background: #f8fafc;
+}
+
+.field-item.active {
+  background: #eef2ff;
+  border-color: #2b5fe4;
+  color: #2b5fe4;
+  font-weight: 600;
+}
+
+.field-item.active::after {
+  content: "✓";
+  font-weight: bold;
 }
 
 .section-label {
@@ -194,7 +267,38 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.field-btn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.field-btn:hover {
+  border-color: #a0aec0;
+}
+
+.field-btn.active {
+  background: #204184;
+  border-color: #204184;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(32, 65, 132, 0.25);
 }
 
 .dates-list {
@@ -248,8 +352,8 @@
 .times-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 40px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .time-btn {
@@ -276,9 +380,20 @@
   box-shadow: 0 4px 10px rgba(13, 163, 87, 0.2);
 }
 
+.time-btn.blocked {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.time-btn.blocked:hover {
+  border-color: #e2e8f0;
+}
+
 .booking-summary {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 24px;
+  padding-top: 16px;
 }
 
 .price-row {
@@ -309,7 +424,9 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: filter 0.2s, transform 0.1s;
+  transition:
+    filter 0.2s,
+    transform 0.1s;
 }
 
 .btn-agendar-large:hover {
