@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UniDeportes – Mis Reservas</title>
+  <link rel="stylesheet" href="../css/menu.css" />
+  <link rel="stylesheet" href="../css/mis-reservas.css" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+  <script src="../js/mis-reservas.js" defer></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="nav-logo">
+      <div class="nav-logo-icon">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <span class="nav-logo-text">UniDeportes</span>
+    </a>
+
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="../index.html#deportes">Canchas</a></li>
+        <li><a href="mis-reservas.html" class="active">Mis Reservas</a></li>
+        <li><a href="en-construccion.html">Contacto</a></li>
+      </ul>
+      <a href="../index.html#deportes" class="btn-reservar">Reservar</a>
+      <div class="avatar-placeholder" title="Mi perfil">U</div>
+    </div>
+  </nav>
+
+  <main class="reservas-container">
+    <header class="page-header">
+      <h1 class="page-title">Mis Reservas</h1>
+      <p class="page-subtitle">Gestiona tus reservas activas y consulta tu historial.</p>
+    </header>
+
+    <div id="reservasGrid" class="reservas-grid">
+      <!-- Content populated by JS -->
+    </div>
+  </main>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Editar Reserva</h2>
+        <button type="button" id="closeModal" class="btn-close">&times;</button>
+      </div>
+      
+      <form id="editForm">
+        <input type="hidden" id="currentEditingId" />
+
+        <div class="form-group">
+          <label class="form-label" for="deporte">Deporte</label>
+          <select id="deporte" class="form-control" required>
+            <option value="futbol">Fútbol</option>
+            <option value="tenis">Tenis</option>
+            <option value="baloncesto">Baloncesto</option>
+            <option value="voleibol">Voleibol</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cancha">Cancha</label>
+          <select id="cancha" class="form-control" required>
+            <option value="Cancha Principal">Cancha Principal</option>
+            <option value="Cancha 2">Cancha 2</option>
+            <option value="Cancha Auxiliar">Cancha Auxiliar</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fecha">Fecha</label>
+          <input type="date" id="fecha" class="form-control" required min="2026-03-15" />
+        </div>
+
+        <div class="form-row form-row-split">
+          <div class="form-group">
+            <label class="form-label" for="horaInicio">Hora Inicio</label>
+            <input type="time" id="horaInicio" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="horaFin">Hora Fin</label>
+            <input type="time" id="horaFin" class="form-control" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-item checkbox-item-single">
+            <input type="checkbox" id="implementos" name="implementos" value="si"> 
+            ¿Necesita implementos?
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelReserva" class="btn-cancelar-reserva">Cancelar Reserva</button>
+          <button type="submit" class="btn-guardar">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-grid">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      <div class="footer-info">
+        <p class="footer-names">
+          Camilo Monsalve <span>•</span>
+          Valentina Masso <span>•</span>
+          Camilo Serpa
+        </p>
+        <p class="footer-project">Proyecto web 2026</p>
+      </div>
+    </div>
+
+    <div class="footer-right">
+      <img src="assets/logo.png" alt="Universidad del Magdalena" />
+    </div>
+  </footer>
+
+</body>
+</html>

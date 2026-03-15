@@ -10,7 +10,7 @@
 </head>
 <body data-sport="microfutbol">
 
-  <nav class="navbar">
+  <nav class="navbar" aria-label="Navegación principal">
     <a href="../../index.html" class="nav-logo">
       <div class="nav-logo-icon">
         <span></span><span></span>
@@ -33,7 +33,7 @@
 
   <main class="cancha-container">
     
-    <div class="cancha-left">
+    <div class="cancha-left" role="region" aria-label="Información de la cancha">
       <!-- Card izquierdo: imagen e información -->
       <div class="header-image-card">
         <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&auto=format&fit=crop&q=80" alt="Cancha Microfutbol #1" class="cancha-cover" />
@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <div class="cancha-right">
+    <div class="cancha-right" role="region" aria-label="Formulario de reserva">
       <!-- Card derecho: formulario de reserva -->
       <div class="booking-card">
         <div class="booking-header">
@@ -83,29 +83,30 @@
               <button type="button" class="field-btn active" onclick="selectField(this, 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 1')">Cancha 1</button>
               <button type="button" class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 2')">Cancha 2</button>
               <button type="button" class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1551280857-2b9bbe52ccbd?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 3')">Cancha 3</button>
+              <button type="button" class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1000&auto=format&fit=crop&q=80', 'Cancha Microfutbol 4')">Cancha 4</button>
             </div>
           </div>
 
           <div class="date-section">
             <p class="section-label">Fecha</p>
             <div class="dates-list">
-              <div class="date-item" onclick="selectDate(this)">
+              <div class="date-item" onclick="selectDate(this)" role="button" tabindex="0">
                 <span class="day-name">DOM</span>
                 <span class="day-num">1</span>
               </div>
-              <div class="date-item" onclick="selectDate(this)">
+              <div class="date-item" onclick="selectDate(this)" role="button" tabindex="0">
                 <span class="day-name">LUN</span>
                 <span class="day-num">2</span>
               </div>
-              <div class="date-item" onclick="selectDate(this)">
+              <div class="date-item" onclick="selectDate(this)" role="button" tabindex="0">
                 <span class="day-name">MAR</span>
                 <span class="day-num">3</span>
               </div>
-              <div class="date-item" onclick="selectDate(this)">
+              <div class="date-item" onclick="selectDate(this)" role="button" tabindex="0">
                 <span class="day-name">MIÉ</span>
                 <span class="day-num">4</span>
               </div>
-              <div class="date-item" onclick="selectDate(this)">
+              <div class="date-item" onclick="selectDate(this)" role="button" tabindex="0">
                 <span class="day-name">JUE</span>
                 <span class="day-num">5</span>
               </div>
@@ -143,7 +144,7 @@
           </div>
 
           <div class="booking-summary">
-            <button type="button" class="btn-agendar-large" onclick="agendarReserva()">AGENDAR</button>
+            <button type="button" class="btn-agendar-large" onclick="agendarReserva()" aria-label="Agendar reserva">Agendar</button>
           </div>
 
         </div>
@@ -175,37 +176,5 @@
 
   <script src="../../js/cancha.js" defer></script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const fieldItems = document.querySelectorAll('.field-item');
-      const canchaCover = document.querySelector('.cancha-cover');
-      const headerTitle = document.querySelector('.header-image-overlay h1');
-      const docTitle = document.querySelector('title');
-
-      fieldItems.forEach(item => {
-        const radio = item.querySelector('input[type="radio"]');
-        
-        radio.addEventListener('change', (e) => {
-          if (e.target.checked) {
-            // Remove active class from all
-            fieldItems.forEach(lbl => {
-              lbl.classList.remove('active');
-            });
-            // Add active class to selected item
-            item.classList.add('active');
-            
-            // Extract the new image and title
-            const newImg = item.getAttribute('data-image');
-            const newName = item.getAttribute('data-name');
-            
-            // Update the DOM elements
-            if(canchaCover) canchaCover.src = newImg;
-            if(headerTitle) headerTitle.innerHTML = newName;
-            if(docTitle) docTitle.textContent = `UniDeportes – ${newName}`;
-          }
-        });
-      });
-    });
-  </script>
 </body>
 </html>
