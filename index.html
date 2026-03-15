@@ -204,12 +204,31 @@
   <script src="js/map.js"></script>
   <script>
     function loadGoogleMaps() {
+      const mapsApiKey = window.localStorage.getItem('UNIDEPORTES_MAPS_API_KEY');
+      if (!mapsApiKey) {
+        const mapContainer = document.getElementById('map');
+        if (mapContainer) {
+          mapContainer.innerHTML = '<div class="map-disabled-message">Mapa no disponible temporalmente. Intenta nuevamente más tarde.</div>';
+          console.info('UniDeportes Maps: define UNIDEPORTES_MAPS_API_KEY en localStorage para habilitar el mapa en entorno local.');
+        }
+        return;
+      }
+
       const script = document.createElement('script');
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAPR5PDh1qrXQZWNZpmmEhhYEq0sSKMzbY&callback=initMap';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(mapsApiKey)}&callback=initMap`;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
     }
+
+    // Manejador para errores de autenticación de Google Maps API
+    window.gm_authFailure = function() {
+      const mapContainer = document.getElementById('map');
+      if (mapContainer) {
+        mapContainer.innerHTML = '<div class="map-disabled-message">Autenticación inválida. Verifica tu clave API.</div>';
+        console.warn('UniDeportes Maps: La clave API es inválida o ha expirado.');
+      }
+    };
 
     window.addEventListener('load', loadGoogleMaps);
   </script>
