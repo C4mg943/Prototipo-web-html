@@ -22,7 +22,7 @@
     <div class="nav-right">
       <ul class="nav-links">
         <li><a href="../../index.html">Canchas</a></li>
-        <li><a href="#">Mis Reservas</a></li>
+        <li><a href="../../mis-reservas.html">Mis Reservas</a></li>
         <li><a href="../../en-construccion.html">Contacto</a></li>
       </ul>
       <div class="avatar-placeholder" style="background: transparent; border: none;">
@@ -61,7 +61,7 @@
             <h3>Administración</h3>
             <p class="phone"><i class="ph ph-phone"></i> +57 (605) 438-1000 Ext. 3050</p>
             <p class="desc">Para eventos especiales o torneos, por favor contactar directamente con administración.</p>
-            <button class="btn-outline" onclick="window.open('https://sistemabienestar.unimagdalena.edu.co/Modulos/ReservasEscenariosGruposCD/Reservas.aspx', '_blank')">Contactar Soporte</button>
+            <button type="button" class="btn-outline" onclick="window.open('https://sistemabienestar.unimagdalena.edu.co/Modulos/ReservasEscenariosGruposCD/Reservas.aspx', '_blank')">Contactar Soporte</button>
           </div>
         </div>
       </div>
@@ -80,9 +80,9 @@
           <div class="field-section">
             <p class="section-label">Escoge cancha</p>
             <div class="fields-grid">
-              <button class="field-btn active" onclick="selectField(this, 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&auto=format&fit=crop&q=80', 'Cancha Baloncesto 1')">Cancha 1</button>
-              <button class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=1000&auto=format&fit=crop&q=80', 'Cancha Baloncesto 2')">Cancha 2</button>
-              <button class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1551280857-2b9bbe52ccbd?w=1000&auto=format&fit=crop&q=80', 'Cancha Baloncesto 3')">Cancha 3</button>
+              <button type="button" class="field-btn active" onclick="selectField(this, 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&auto=format&fit=crop&q=80', 'Cancha Baloncesto 1')">Cancha 1</button>
+              <button type="button" class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=1000&auto=format&fit=crop&q=80', 'Cancha Baloncesto 2')">Cancha 2</button>
+              <button type="button" class="field-btn" onclick="selectField(this, 'https://images.unsplash.com/photo-1551280857-2b9bbe52ccbd?w=1000&auto=format&fit=crop&q=80', 'Cancha Baloncesto 3')">Cancha 3</button>
             </div>
           </div>
 
@@ -115,20 +115,20 @@
           <div class="time-section">
             <p class="section-label"><i class="ph ph-clock"></i> Horarios Disponibles</p>
             <div class="times-grid">
-              <button class="time-btn" onclick="selectTime(this)">06:00 AM</button>
-              <button class="time-btn" onclick="selectTime(this)">07:00 AM</button>
-              <button class="time-btn" onclick="selectTime(this)">08:00 AM</button>
-              <button class="time-btn" onclick="selectTime(this)">09:00 AM</button>
-              <button class="time-btn" onclick="selectTime(this)">10:00 AM</button>
-              <button class="time-btn" onclick="selectTime(this)">11:00 AM</button>
-              <button class="time-btn" onclick="selectTime(this)">02:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">03:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">04:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">05:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">06:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">07:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">08:00 PM</button>
-              <button class="time-btn" onclick="selectTime(this)">09:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">06:00 AM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">07:00 AM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">08:00 AM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">09:00 AM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">10:00 AM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">11:00 AM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">02:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">03:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">04:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">05:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">06:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">07:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">08:00 PM</button>
+              <button type="button" class="time-btn" onclick="selectTime(this)">09:00 PM</button>
             </div>
           </div>
 
@@ -143,7 +143,7 @@
           </div>
 
           <div class="booking-summary">
-            <button class="btn-agendar-large" onclick="agendarReserva()">AGENDAR</button>
+            <button type="button" class="btn-agendar-large" onclick="agendarReserva()">AGENDAR</button>
           </div>
 
         </div>
@@ -188,7 +188,9 @@
         radio.addEventListener('change', (e) => {
           if (e.target.checked) {
             // Remove active class from all
-            fieldItems.forEach(lbl => lbl.classList.remove('active'));
+            fieldItems.forEach(lbl => {
+              lbl.classList.remove('active');
+            });
             // Add active class to selected item
             item.classList.add('active');
             

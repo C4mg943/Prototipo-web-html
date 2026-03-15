@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('./variables.css');
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -15,14 +15,14 @@ html, body {
   height: 100%;
   font-family: 'Inter', sans-serif;
   font-size: 16px;
-  color: #1a1a1a;
+  color: var(--color-text-heading);
 }
 
 .page-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a7a7a 0%, #0d5f6e 40%, #0a4a5e 70%, #0d3b50 100%);
+  background: linear-gradient(135deg, var(--color-primary-100) 0%, var(--color-primary-200) 40%, var(--color-primary-300) 70%, var(--color-primary-400) 100%);
 }
 
 .header {
@@ -54,7 +54,7 @@ html, body {
 }
 
 .logo-icon span {
-  background: #fff;
+  background: var(--color-white);
   border-radius: 3px;
   display: block;
 }
@@ -63,7 +63,7 @@ html, body {
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.3px;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .main-content {
@@ -90,7 +90,7 @@ html, body {
   font-size: 3.5rem;
   font-weight: 800;
   line-height: 1.1;
-  color: #fff;
+  color: var(--color-white);
   margin-bottom: 20px;
   letter-spacing: -1px;
 }
@@ -106,24 +106,24 @@ html, body {
 .btn-hero {
   display: inline-block;
   padding: 12px 28px;
-  border: 2px solid rgba(255,255,255,0.85);
-  color: #fff;
+  border: 2px solid var(--color-complement-100);
+  color: var(--color-white);
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
   transition: background 0.25s, color 0.25s;
   cursor: pointer;
-  background: transparent;
+  background: var(--color-complement-100);
   font-family: 'Inter', sans-serif;
 }
 
 .btn-hero:hover {
-  background: rgba(255,255,255,0.15);
+  background: var(--color-complement-200);
 }
 
 .login-card {
-  background: #fff;
+  background: var(--color-white);
   border-radius: 20px;
   padding: 40px 36px;
   width: 100%;
@@ -136,13 +136,13 @@ html, body {
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
-  color: #0f1a2e;
+  color: var(--color-primary-300);
   margin-bottom: 6px;
 }
 
 .card-subtitle {
   font-size: 0.82rem;
-  color: #8a9ab0;
+  color: var(--color-neutral-500);
   text-align: center;
   margin-bottom: 28px;
 }
@@ -155,7 +155,7 @@ html, body {
   display: block;
   font-size: 0.82rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--color-neutral-700);
   margin-bottom: 7px;
 }
 
@@ -168,7 +168,7 @@ html, body {
 .input-icon {
   position: absolute;
   left: 14px;
-  color: #a0aec0;
+  color: var(--color-neutral-500);
   font-size: 1rem;
   pointer-events: none;
 }
@@ -176,30 +176,30 @@ html, body {
 .form-input {
   width: 100%;
   padding: 12px 14px 12px 42px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--color-neutral-300);
   border-radius: 10px;
   font-size: 0.88rem;
   font-family: 'Inter', sans-serif;
-  color: #2d3748;
-  background: #f8fafc;
+  color: var(--color-neutral-800);
+  background: var(--color-neutral-100);
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }
 
 .form-input:focus {
-  border-color: #0d9c9c;
-  box-shadow: 0 0 0 3px rgba(13, 156, 156, 0.12);
-  background: #fff;
+  border-color: var(--color-primary-100);
+  box-shadow: 0 0 0 3px rgba(1, 131, 239, 0.15);
+  background: var(--color-white);
 }
 
 .form-input::placeholder {
-  color: #b0bec5;
+  color: var(--color-neutral-500);
 }
 
 .toggle-password {
   position: absolute;
   right: 14px;
-  color: #a0aec0;
+  color: var(--color-neutral-500);
   cursor: pointer;
   font-size: 0.95rem;
   background: none;
@@ -210,7 +210,7 @@ html, body {
 }
 
 .toggle-password:hover {
-  color: #4a5568;
+  color: var(--color-neutral-700);
 }
 
 .form-options {
@@ -230,18 +230,18 @@ html, body {
 .remember-me input[type="checkbox"] {
   width: 15px;
   height: 15px;
-  accent-color: #0d9c9c;
+  accent-color: var(--color-primary-100);
   cursor: pointer;
 }
 
 .remember-me span {
   font-size: 0.8rem;
-  color: #718096;
+  color: var(--color-neutral-600);
 }
 
 .forgot-link {
   font-size: 0.8rem;
-  color: #0d9c9c;
+  color: var(--color-primary-100);
   text-decoration: none;
   font-weight: 500;
 }
@@ -253,8 +253,8 @@ html, body {
 .btn-login {
   width: 100%;
   padding: 14px;
-  background: #0f1a2e;
-  color: #fff;
+  background: var(--color-primary-100);
+  color: var(--color-white);
   border: none;
   border-radius: 10px;
   font-size: 0.95rem;
@@ -266,7 +266,7 @@ html, body {
 }
 
 .btn-login:hover {
-  background: #1a2e4a;
+  background: var(--color-primary-200);
 }
 
 .btn-login:active {
@@ -276,12 +276,12 @@ html, body {
 .register-text {
   text-align: center;
   font-size: 0.8rem;
-  color: #8a9ab0;
+  color: var(--color-neutral-500);
   margin-top: 20px;
 }
 
 .register-link {
-  color: #0d9c9c;
+  color: var(--color-primary-100);
   font-weight: 600;
   text-decoration: none;
 }
@@ -291,7 +291,7 @@ html, body {
 }
 
 .footer {
-  background: #0a2236;
+  background: var(--color-footer-bg);
   padding: 24px 80px;
   display: flex;
   justify-content: space-between;
@@ -337,7 +337,7 @@ html, body {
 .footer-project {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-white);
   letter-spacing: -0.3px;
 }
 

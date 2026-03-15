@@ -22,7 +22,7 @@
     <div class="nav-right">
       <ul class="nav-links">
         <li><a href="#deportes" class="active">Canchas</a></li>
-        <li><a href="#">Mis Reservas</a></li>
+        <li><a href="mis-reservas.html">Mis Reservas</a></li>
         <li><a href="html/en-construccion.html">Contacto</a></li>
       </ul>
       <a href="#deportes" class="btn-reservar">Reservar</a>
@@ -222,7 +222,7 @@
     }
 
     // Manejador para errores de autenticación de Google Maps API
-    window.gm_authFailure = function() {
+    window.gm_authFailure = () => {
       const mapContainer = document.getElementById('map');
       if (mapContainer) {
         mapContainer.innerHTML = '<div class="map-disabled-message">Autenticación inválida. Verifica tu clave API.</div>';
