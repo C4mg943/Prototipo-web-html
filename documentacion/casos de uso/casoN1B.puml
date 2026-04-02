@@ -1,0 +1,28 @@
+@startuml diagrama
+
+left to right direction
+
+actor "Vigilante" as Vig
+actor "Sistema Universidad" as Sis
+
+rectangle "Monitoreo Operativo" {
+
+  usecase "CU-N1B.1\nConsultar reservas\ndel día" as M1
+  usecase "CU-N1B.2\nVerificar cumplimiento\nde reserva" as M2
+  usecase "CU-N1B.3\nReportar disponibilidad\nde cancha" as M3
+
+  usecase "Consultar estado de\nreserva" as MX1
+  usecase "Registrar novedad\noperativa" as MX2
+}
+
+Vig --> M1 
+Vig --> M2 
+Vig --> M3 
+
+M1 ..> MX1 : <<include>>
+M2 ..> MX1 : <<include>>
+M3 ..> MX2 : <<include>>
+
+Sis --> MX1
+Sis --> MX2
+@enduml

@@ -1,0 +1,31 @@
+@startuml diagrama
+
+left to right direction
+
+actor "Estudiante" as Est
+actor "Vigilante" as Vig
+actor "Administrador" as Adm
+actor "Sistema Universidad" as Sis
+
+rectangle "Sistema UniDeportes" {
+  usecase "CU-N0.1\nAcceder al sistema" as N01
+  usecase "CU-N0.2\nConsultar disponibilidad\nde escenarios" as N02
+  usecase "CU-N0.3\nGestionar reservas\npersonales" as N03
+  usecase "CU-N0.4\nMonitorear uso de\ninstalaciones" as N04
+  usecase "CU-N0.5\nAdministrar sistema" as N05
+  usecase "CU-N0.6\nProveer servicios\ninstitucionales" as N06
+}
+
+Est --> N01
+Est --> N02
+Est --> N03
+Vig --> N03
+Vig --> N04
+Adm --> N05
+Sis --> N06
+
+N03 ..> N06 : <<include>>
+N04 ..> N06 : <<include>>
+N05 ..> N06 : <<include>>
+
+@enduml

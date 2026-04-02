@@ -1,0 +1,32 @@
+@startuml diagrama
+
+left to right direction
+
+actor "Administrador" as Adm
+actor "Sistema Universidad" as Sis
+
+rectangle "Administración" {
+
+  usecase "CU-N1C.1\nGestionar usuarios" as A1
+  usecase "CU-N1C.2\nGestionar escenarios\ny canchas" as A2
+  usecase "CU-N1C.3\nGestionar disponibilidad" as A3
+  usecase "CU-N1C.4\nGenerar reportes" as A4
+
+  usecase "Configurar parámetros\ninstitucionales" as AX1
+  usecase "Consultar trazabilidad\nde operaciones" as AX2
+}
+
+
+Adm --> A1 
+Adm --> A2 
+Adm --> A3 
+Adm --> A4 
+
+A1 ..> AX1 : <<include>>
+A2 ..> AX1 : <<include>>
+A3 ..> AX1 : <<include>>
+A4 ..> AX2 : <<include>>
+
+Sis --> AX1
+Sis --> AX2
+@enduml

@@ -1,0 +1,22 @@
+@startuml diagrama
+
+left to right direction
+
+actor "Estudiante" as Est
+
+rectangle "Gestión de Reservas" {
+  usecase "CU-N1A.1\nRealizar reserva" as R1
+  usecase "CU-N1A.2\nConsultar mis reservas" as R2
+  usecase "CU-N1A.3\nModificar reserva" as R3
+  usecase "CU-N1A.4\nCancelar reserva" as R4
+
+}
+
+Est --> R1 
+Est --> R2 
+Est --> R3 
+Est --> R4 
+
+
+
+@enduml
