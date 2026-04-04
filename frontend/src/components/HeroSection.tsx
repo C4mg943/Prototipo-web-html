@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export function HeroSection() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <section className="hero">
       <div className="hero-text">
@@ -8,17 +11,12 @@ export function HeroSection() {
 en minutos...</h1>
         <p className="hero-desc">Consulta disponibilidad en tiempo real y agenda sin complicaciones.</p>
         <div className="hero-actions">
-          <Link to="/login" className="btn-agendar">
+          <Link to={isAuthenticated ? '/en-construccion' : '/login'} className="btn-agendar">
             Agendar
           </Link>
-          <a
-            className="btn-como"
-            href="https://sistemabienestar.unimagdalena.edu.co/Modulos/ReservasEscenariosGruposCD/Reservas.aspx"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link className="btn-como" to="/en-construccion">
             Cómo funciona
-          </a>
+          </Link>
         </div>
       </div>
     </section>

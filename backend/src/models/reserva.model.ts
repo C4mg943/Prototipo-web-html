@@ -48,6 +48,14 @@ export interface CreateReservaInput {
   notas?: string | undefined;
 }
 
+export interface UpdateReservaInput {
+  fechaReserva: string;
+  idFranjaInicio: number;
+  idFranjaFin: number;
+  equipoSolicitado?: boolean | undefined;
+  notas?: string | undefined;
+}
+
 export interface CancelReservaInput {
   razonCancelacion: string;
 }

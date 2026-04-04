@@ -1,10 +1,16 @@
-import type { ApiEnvelope, CancelReservaPayload, CreateReservaPayload, ReservaDto } from '../types/domain';
+import type {
+  ApiEnvelope,
+  CancelReservaPayload,
+  CreateReservaPayload,
+  ReservaDto,
+  UpdateReservaPayload,
+} from '../types/domain';
 import { readAuthToken } from './auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000';
 
 interface JsonOptions {
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'PATCH';
   body?: unknown;
 }
 
@@ -50,6 +56,15 @@ export async function createReserva(payload: CreateReservaPayload): Promise<Rese
 export async function cancelReserva(id: number, payload: CancelReservaPayload): Promise<ReservaDto> {
   const response = await reservasRequest<ReservaDto>(`/api/reservas/${id}/cancel`, {
     method: 'POST',
+    body: payload,
+  });
+
+  return response.data;
+}
+
+export async function updateReserva(id: number, payload: UpdateReservaPayload): Promise<ReservaDto> {
+  const response = await reservasRequest<ReservaDto>(`/api/reservas/${id}`, {
+    method: 'PATCH',
     body: payload,
   });
 

@@ -7,6 +7,7 @@ import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { MyReservationsPage } from './pages/MyReservationsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { UnderConstructionPage } from './pages/UnderConstructionPage';
 
 export function AppRouter() {
   return (
@@ -15,6 +16,7 @@ export function AppRouter() {
         <Route index element={<HomePage />} />
         <Route path="canchas/:sportSlug" element={<CanchaPage />} />
         <Route path="contacto" element={<ContactPage />} />
+        <Route path="en-construccion" element={<UnderConstructionPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="registro" element={<Navigate to="/login" replace />} />
         <Route

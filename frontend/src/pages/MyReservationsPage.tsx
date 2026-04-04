@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { CancelReservationModal } from '../components/CancelReservationModal';
+import { EditReservationModal } from '../components/EditReservationModal';
 import { ReservationCard } from '../components/ReservationCard';
-import { cancelReserva, listMyReservas } from '../services/reservas';
-import type { ReservaDto } from '../types/domain';
+import { cancelReserva, listMyReservas, updateReserva } from '../services/reservas';
+import type { ReservaDto, UpdateReservaPayload } from '../types/domain';
 
 export function MyReservationsPage() {
   const [reservas, setReservas] = useState<ReservaDto[]>([]);
@@ -26,19 +26,37 @@ export function MyReservationsPage() {
     })();
   }, []);
 
-  const handleConfirmCancel = async (reason: string) => {
+  const handleSaveEdit = async (reservaId: number, payload: UpdateReservaPayload) => {
+    try {
+      setIsSubmitting(true);
+      const updated = await updateReserva(reservaId, payload);
+      setReservas((prev) => prev.map((reserva) => (reserva.id === updated.id ? updated : reserva)));
+      setSelectedReserva(null);
+      setError('');
+    } catch (updateError) {
+      const message = updateError instanceof Error ? updateError.message : 'No se pudo editar la reserva.';
+      setError(message);
+      throw updateError;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirmCancel = async (reservaId: number, reason: string) => {
     if (!selectedReserva) {
       return;
     }
 
     try {
       setIsSubmitting(true);
-      const updated = await cancelReserva(selectedReserva.id, { razonCancelacion: reason });
+      const updated = await cancelReserva(reservaId, { razonCancelacion: reason });
       setReservas((prev) => prev.map((reserva) => (reserva.id === updated.id ? updated : reserva)));
       setSelectedReserva(null);
       setError('');
     } catch (cancelError) {
-      setError(cancelError instanceof Error ? cancelError.message : 'No se pudo cancelar la reserva.');
+      const message = cancelError instanceof Error ? cancelError.message : 'No se pudo cancelar la reserva.';
+      setError(message);
+      throw cancelError;
     } finally {
       setIsSubmitting(false);
     }
@@ -61,17 +79,21 @@ export function MyReservationsPage() {
 
       <div id="reservasGrid" className="reservas-grid">
         {reservas.map((reserva) => (
-          <ReservationCard key={reserva.id} reserva={reserva} onCancel={setSelectedReserva} />
+          <ReservationCard key={reserva.id} reserva={reserva} onEdit={setSelectedReserva} />
         ))}
       </div>
 
-      <CancelReservationModal
-        key={selectedReserva?.id ?? 'none'}
-        reserva={selectedReserva}
-        isSubmitting={isSubmitting}
-        onConfirm={handleConfirmCancel}
-        onClose={() => setSelectedReserva(null)}
-      />
+      {selectedReserva ? (
+        <EditReservationModal
+          key={selectedReserva.id}
+          reserva={selectedReserva}
+          reservas={reservas}
+          isSubmitting={isSubmitting}
+          onSave={handleSaveEdit}
+          onCancelReservation={handleConfirmCancel}
+          onClose={() => setSelectedReserva(null)}
+        />
+      ) : null}
     </section>
   );
 }

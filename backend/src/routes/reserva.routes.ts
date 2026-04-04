@@ -15,6 +15,7 @@ reservaRouter.use(authMiddleware);
 reservaRouter.get('/', reservaController.listMine);
 reservaRouter.get('/:id', reservaController.getMineById);
 reservaRouter.post('/', reservaController.create);
+reservaRouter.patch('/:id', reservaController.updateMine);
 reservaRouter.post('/:id/cancel', reservaController.cancelMine);
 
 export { reservaRouter };

@@ -61,11 +61,21 @@ export interface CancelReservaPayload {
   razonCancelacion: string;
 }
 
+export interface UpdateReservaPayload {
+  fechaReserva: string;
+  idFranjaInicio: number;
+  idFranjaFin: number;
+  equipoSolicitado?: boolean;
+  notas?: string;
+}
+
 export interface FacilityOption {
   id: number;
   sport: SportSlug;
   name: string;
   scenario: string;
+  image: string;
+  imageAlt: string;
 }
 
 export type SportSlug =

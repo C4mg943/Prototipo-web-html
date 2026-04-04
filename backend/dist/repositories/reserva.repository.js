@@ -150,6 +150,39 @@ class ReservaRepository {
         }
         return reserva;
     }
+    async updateReserva(params) {
+        await pool_1.pool.query(`
+      UPDATE reservas
+      SET
+        fecha_reserva = $2,
+        id_franja_inicio = $3,
+        id_franja_fin = $4,
+        comienza_en = $5,
+        termina_en = $6,
+        duracion_horas = $7,
+        equipo_solicitado = $8,
+        notas = $9,
+        actualizado_por = $10,
+        actualizado_en = NOW()
+      WHERE id = $1
+      `, [
+            params.idReserva,
+            params.fechaReserva,
+            params.idFranjaInicio,
+            params.idFranjaFin,
+            params.comienzaEn,
+            params.terminaEn,
+            params.duracionHoras,
+            params.equipoSolicitado,
+            params.notas,
+            params.actorUserId,
+        ]);
+        const reserva = await this.findReservaById(params.idReserva);
+        if (!reserva) {
+            throw new api_error_1.ApiError(500, 'No se pudo recuperar la reserva actualizada.');
+        }
+        return reserva;
+    }
     toReservaDto(row) {
         return {
             id: Number(row.id),

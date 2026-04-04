@@ -4,6 +4,7 @@ import {
   EstadoReservaRecord,
   FranjaHorariaRecord,
   ReservaDto,
+  UpdateReservaInput,
 } from '../models/reserva.model';
 import { ReservaRepository } from '../repositories/reserva.repository';
 import { ApiError } from '../utils/api-error';
@@ -99,6 +100,61 @@ export class ReservaService {
     const reason = this.normalizeRequiredText(input.razonCancelacion, 'La razón de cancelación es obligatoria.');
 
     return this.reservaRepository.cancelReserva(reservaId, canceledStatus.id, reason, userId);
+  }
+
+  async updateMyReserva(userId: number, reservaId: number, input: UpdateReservaInput): Promise<ReservaDto> {
+    const reserva = await this.reservaRepository.findReservaById(reservaId);
+
+    if (!reserva) {
+      throw new ApiError(404, 'Reserva no encontrada.');
+    }
+
+    this.ensureOwnership(userId, reserva.idUsuario);
+
+    if (reserva.estado.codigo === canceledStatusCode) {
+      throw new ApiError(409, 'No se puede editar una reserva cancelada.');
+    }
+
+    if (reserva.estado.codigo === 'COMPLETADA' || reserva.estado.codigo === 'NO_PRESENTO') {
+      throw new ApiError(409, 'No se puede editar una reserva finalizada.');
+    }
+
+    const startSlot = await this.reservaRepository.findFranjaById(input.idFranjaInicio);
+    const endSlot = await this.reservaRepository.findFranjaById(input.idFranjaFin);
+
+    this.validateSlots(startSlot, endSlot);
+
+    if (!startSlot || !endSlot) {
+      throw new ApiError(500, 'Error interno: franja horaria no se pudo cargar correctamente.');
+    }
+
+    const slotDurationHours = endSlot.orden_clasificacion - startSlot.orden_clasificacion;
+
+    if (slotDurationHours < 1 || slotDurationHours > 3) {
+      throw new ApiError(400, 'La duración permitida para la reserva es entre 1 y 3 horas.');
+    }
+
+    const fechaReserva = this.normalizeDate(input.fechaReserva);
+    const comienzaEn = this.buildUtcDate(fechaReserva, startSlot.hora_inicio);
+    const terminaEn = this.buildUtcDate(fechaReserva, endSlot.hora_fin);
+    const notas = this.normalizeOptionalText(input.notas);
+
+    try {
+      return await this.reservaRepository.updateReserva({
+        idReserva: reservaId,
+        idFranjaInicio: input.idFranjaInicio,
+        idFranjaFin: input.idFranjaFin,
+        fechaReserva,
+        comienzaEn,
+        terminaEn,
+        duracionHoras: slotDurationHours,
+        equipoSolicitado: input.equipoSolicitado ?? false,
+        notas,
+        actorUserId: userId,
+      });
+    } catch (error) {
+      throw this.mapDatabaseError(error);
+    }
   }
 
   private validateSlots(startSlot: FranjaHorariaRecord | null, endSlot: FranjaHorariaRecord | null): void {

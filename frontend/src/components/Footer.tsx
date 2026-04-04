@@ -20,7 +20,7 @@ export function Footer() {
       <div className="footer-right">
         <img src="/assets/logo.png" alt="Universidad del Magdalena" />
         <div className="footer-separator" />
-        <img src="/assets/logo-extra.png" alt="Logo Extra" />
+        <img src="/assets/extra.png" alt="Logo Extra" />
       </div>
     </footer>
   );

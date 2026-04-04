@@ -1,8 +1,9 @@
 import type { ReservaDto } from '../types/domain';
+import { formatTimeRange } from '../utils/timeSlots';
 
 interface ReservationCardProps {
   reserva: ReservaDto;
-  onCancel: (reserva: ReservaDto) => void;
+  onEdit: (reserva: ReservaDto) => void;
 }
 
 const estadoClassMap: Record<string, string> = {
@@ -22,17 +23,10 @@ function formatDate(dateIso: string): string {
   });
 }
 
-function formatTime(dateIso: string): string {
-  const date = new Date(dateIso);
-  return date.toLocaleTimeString('es-CO', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-export function ReservationCard({ reserva, onCancel }: ReservationCardProps) {
+export function ReservationCard({ reserva, onEdit }: ReservationCardProps) {
   const estadoClass = estadoClassMap[reserva.estado.codigo] ?? 'estado-pendiente';
-  const isCancelable = reserva.estado.codigo === 'PENDIENTE' || reserva.estado.codigo === 'CONFIRMADA';
+  const isEditable = reserva.estado.codigo === 'PENDIENTE' || reserva.estado.codigo === 'CONFIRMADA';
+  const timeRangeLabel = formatTimeRange(reserva.franja.idInicio, reserva.franja.idFin);
 
   return (
     <article className="reserva-card">
@@ -42,11 +36,9 @@ export function ReservationCard({ reserva, onCancel }: ReservationCardProps) {
       </div>
 
       <div className="reserva-info">
-        <h3>{reserva.instalacion.codigo}</h3>
+        <h3>{reserva.instalacion.nombre}</h3>
         <p className="reserva-date">📅 {formatDate(reserva.comienzaEn)}</p>
-        <p className="reserva-time">
-          🕒 {formatTime(reserva.comienzaEn)} - {formatTime(reserva.terminaEn)}
-        </p>
+        <p className="reserva-time">🕒 {timeRangeLabel}</p>
       </div>
 
       <div className="reserva-details">
@@ -60,9 +52,9 @@ export function ReservationCard({ reserva, onCancel }: ReservationCardProps) {
         </div>
       </div>
 
-      {isCancelable ? (
-        <button type="button" className="btn-editar" onClick={() => onCancel(reserva)}>
-          Cancelar Reserva
+      {isEditable ? (
+        <button type="button" className="btn-editar" onClick={() => onEdit(reserva)}>
+          Editar reserva
         </button>
       ) : null}
     </article>

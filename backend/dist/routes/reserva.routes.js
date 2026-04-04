@@ -15,5 +15,6 @@ reservaRouter.use(auth_middleware_1.authMiddleware);
 reservaRouter.get('/', reservaController.listMine);
 reservaRouter.get('/:id', reservaController.getMineById);
 reservaRouter.post('/', reservaController.create);
+reservaRouter.patch('/:id', reservaController.updateMine);
 reservaRouter.post('/:id/cancel', reservaController.cancelMine);
 //# sourceMappingURL=reserva.routes.js.map

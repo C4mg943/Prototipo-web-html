@@ -1,12 +1,15 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { facilitiesBySport, slotOptions } from '../data/sports';
 import { createReserva } from '../services/reservas';
 import type { SportSlug } from '../types/domain';
+import { formatDayLabel, formatWeekdayLabel, getWeekDays, startOfWeek, toIsoDate } from '../utils/weekPicker';
 
 const maxLoanHours = 3;
 
 interface BookingFormProps {
   sportSlug: SportSlug;
+  selectedFacilityId?: number;
+  onFacilityChange?: (facilityId: number) => void;
 }
 
 interface BookingState {
@@ -25,13 +28,16 @@ function todayIso(): string {
   return `${now.getFullYear()}-${month}-${day}`;
 }
 
-export function BookingForm({ sportSlug }: BookingFormProps) {
+export function BookingForm({ sportSlug, selectedFacilityId, onFacilityChange }: BookingFormProps) {
   const facilities = facilitiesBySport[sportSlug];
   const hasFacilities = facilities.length > 0;
+  const weekDates = useMemo(() => getWeekDays(startOfWeek(new Date())), []);
+  const weekDateIds = useMemo(() => weekDates.map((date) => toIsoDate(date)), [weekDates]);
+  const fallbackDate = weekDateIds[0] ?? todayIso();
 
   const [form, setForm] = useState<BookingState>({
-    idInstalacion: facilities[0]?.id ?? 1,
-    fechaReserva: todayIso(),
+    idInstalacion: selectedFacilityId ?? facilities[0]?.id ?? 1,
+    fechaReserva: weekDateIds.includes(todayIso()) ? todayIso() : fallbackDate,
     idFranjaInicio: 1,
     idFranjaFin: 2,
     equipoSolicitado: false,
@@ -42,6 +48,11 @@ export function BookingForm({ sportSlug }: BookingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const duration = useMemo(() => form.idFranjaFin - form.idFranjaInicio, [form.idFranjaFin, form.idFranjaInicio]);
+
+  const normalizedSelectedFacilityId = selectedFacilityId ?? facilities[0]?.id ?? 1;
+  useEffect(() => {
+    setForm((prev) => ({ ...prev, idInstalacion: normalizedSelectedFacilityId }));
+  }, [normalizedSelectedFacilityId]);
 
   if (!hasFacilities) {
     return (
@@ -103,7 +114,11 @@ export function BookingForm({ sportSlug }: BookingFormProps) {
             id="instalacion"
             className="form-control"
             value={form.idInstalacion}
-            onChange={(event) => setForm((prev) => ({ ...prev, idInstalacion: Number(event.target.value) }))}
+            onChange={(event) => {
+              const nextFacilityId = Number(event.target.value);
+              setForm((prev) => ({ ...prev, idInstalacion: nextFacilityId }));
+              onFacilityChange?.(nextFacilityId);
+            }}
           >
             {facilities.map((facility) => (
               <option key={facility.id} value={facility.id}>
@@ -114,18 +129,30 @@ export function BookingForm({ sportSlug }: BookingFormProps) {
         </div>
 
         <div className="field-section">
-          <label className="field-label" htmlFor="fechaReserva">
-            Fecha
-          </label>
-          <input
-            id="fechaReserva"
-            type="date"
-            className="form-control"
-            min={todayIso()}
-            value={form.fechaReserva}
-            onChange={(event) => setForm((prev) => ({ ...prev, fechaReserva: event.target.value }))}
-            required
-          />
+          <span className="field-label" id="fechaReservaLabel">
+            Fechas:
+          </span>
+          <fieldset className="week-picker" aria-labelledby="fechaReservaLabel">
+            {weekDates.map((date) => {
+              const isoDate = toIsoDate(date);
+              const isSelected = form.fechaReserva === isoDate;
+              return (
+                <button
+                  key={isoDate}
+                  type="button"
+                  className={isSelected ? 'week-day-btn week-day-btn-active' : 'week-day-btn'}
+                  onClick={() => {
+                    setError('');
+                    setForm((prev) => ({ ...prev, fechaReserva: isoDate }));
+                  }}
+                >
+                  <span className="week-day-name">{formatWeekdayLabel(date)}</span>
+                  <span className="week-day-date">{formatDayLabel(date)}</span>
+                </button>
+              );
+            })}
+          </fieldset>
+          <input id="fechaReserva" type="hidden" value={form.fechaReserva} required readOnly />
         </div>
 
         <div className="field-row">
