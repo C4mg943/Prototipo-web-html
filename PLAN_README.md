@@ -1,488 +1,548 @@
-# 📚 UniDeportes
+# UniDeportes - Sistema de Reservas Deportivas
 
-## 🎯 ¿Qué es UniDeportes?
+Sistema web completo para gestión de reservas de instalaciones deportivas universitarias. Desarrollado con arquitectura moderna full-stack: backend REST API en Node.js + Express + TypeScript y frontend SPA en React + TypeScript + Vite.
 
-**UniDeportes** es un sistema de reserva de canchas deportivas (polideportivo digital) desarrollado con tecnologías web modernas. Permite a estudiantes universitarios reservar espacios deportivos (fútbol, tenis, badminton, etc.) en 7 escenarios diferentes, seleccionando fecha, horario y cancha específica. Es un **prototipo cliente (frontend)** sin backend ni base de datos real.
+## Descripción General
 
-**Stack tecnológico:**
+Plataforma que permite a usuarios universitarios reservar instalaciones deportivas (canchas, gimnasios, piscinas) con franjas horarias configurables, gestión de equipamiento opcional, y autenticación basada en JWT. El sistema incluye validaciones robustas, manejo de estados de reserva, y cancelación con justificación.
 
-- HTML5 (estructura)
-- CSS3 (estilos + responsive design)
-- JavaScript vanilla (sin frameworks)
-- JSON (datos estáticos de canchas)
-- Google Maps API (ubicación de escenarios)
-- localStorage/sessionStorage (almacenamiento local)
+**Contexto:** Proyecto académico desarrollado en equipo (2-3 personas), aplicando arquitectura en capas, buenas prácticas de desarrollo full-stack y despliegue futuro en VPS propio.
 
 ---
 
-## 🏗️ Arquitectura General
+## Stack Tecnológico
 
-### Flujo de Usuario
+### Backend
+| Tecnología         | Versión       | Propósito                              |
+|--------------------|---------------|----------------------------------------|
+| Node.js            | ≥18.x         | Runtime JavaScript                     |
+| Express            | ^5.2.1        | Framework web                          |
+| TypeScript         | ^6.0.2        | Tipado estático                        |
+| PostgreSQL         | ≥14.x         | Base de datos relacional               |
+| pg                 | ^8.20.0       | Cliente PostgreSQL                     |
+| jsonwebtoken       | ^9.0.3        | Autenticación JWT                      |
+| bcryptjs           | ^3.0.3        | Hash de contraseñas                    |
+| Zod                | ^4.3.6        | Validación de esquemas                 |
+| multer             | ^2.1.1        | Upload de archivos                     |
+| helmet             | ^8.1.0        | Seguridad HTTP headers                 |
+| cors               | ^2.8.6        | Manejo de CORS                         |
+| morgan             | ^1.10.1       | Logger HTTP requests                   |
+| dotenv             | ^17.4.0       | Variables de entorno                   |
 
-```
-1. Usuario accede → index.html (página principal)
-   ↓
-2. Ve 8 deportes disponibles (grid responsive)
-   ↓
-3. Hace clic en un deporte → canchas/{deporte}.html
-   ↓
-4. Selecciona: escenario, cancha, fecha, horarios (1-3 horas)
-   ↓
-5. Click "Agendar" → Valida y guarda en sessionStorage
-   ↓
-6. Puede ir a "Mis Reservas" (login.html → mis-reservas.html)
-   ↓
-7. Ve, edita o cancela sus reservas (datos en localStorage)
-```
+### Frontend
+| Tecnología         | Versión       | Propósito                              |
+|--------------------|---------------|----------------------------------------|
+| React              | ^19.2.4       | Librería UI                            |
+| TypeScript         | ~5.9.3        | Tipado estático                        |
+| Vite               | ^8.0.1        | Build tool y dev server                |
+| React Router DOM   | ^7.13.2       | Enrutamiento SPA                       |
+| Tailwind CSS       | ^4.2.2        | Framework CSS utility-first            |
 
-### Componentes Principales
-
-| Componente             | Archivos                          | Función                                         |
-| ---------------------- | --------------------------------- | ----------------------------------------------- |
-| **Página Principal**   | index.html                        | Navbar, hero, grid de 8 deportes, mapa, footer  |
-| **Páginas de Canchas** | futbol.html, tenis.html, etc. (8) | Layout 2-columnas: info + selector de reserva   |
-| **Login**              | html/login.html                   | Formulario email + contraseña                   |
-| **Mis Reservas**       | html/mis-reservas.html            | Ver, editar, cancelar reservas                  |
-| **Lógica de Reservas** | js/cancha.js                      | Selección de cancha, fecha, horario, validación |
-| **Gestión de Datos**   | js/mis-reservas.js                | CRUD (crear, leer, actualizar, eliminar)        |
-| **Configuración**      | js/config/canchas.json            | 7 escenarios × 8 deportes, especificaciones     |
-| **Estilos**            | css/ (5 archivos)                 | Diseño responsive, variables, colores           |
+### Herramientas de Desarrollo
+- **ESLint** (^10.1.0 backend, ^9.39.4 frontend): Linting TypeScript
+- **tsx** (^4.21.0): Ejecución TypeScript en dev
+- **nodemon** (^3.1.14): Hot reload backend
 
 ---
 
-## 📂 Estructura de Archivos (21 archivos totales)
+## Arquitectura
+
+### Backend: Arquitectura en Capas
+
+Patrón **Controller → Service → Repository → Database** con separación clara de responsabilidades:
+
+```
+┌─────────────┐
+│  Routes     │ → Define endpoints HTTP y rutas
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│ Controllers │ → Recibe requests, valida entrada (Zod), llama Services
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│  Services   │ → Lógica de negocio, orquestación, reglas
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│Repositories │ → Acceso a datos, queries SQL (pg)
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│  Database   │ → PostgreSQL
+└─────────────┘
+```
+
+**Middleware:** Autenticación JWT, validación de esquemas, manejo de errores centralizado, logging.
+
+### Frontend: Arquitectura React Modular
+
+```
+┌──────────────────┐
+│   AppRouter      │ → Enrutamiento con React Router DOM
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│   Layouts        │ → MainLayout con header/footer
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│   Pages          │ → Vistas principales (Home, Reservas, MisReservas, Login, Register)
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│  Components      │ → Componentes reutilizables (Cards, Forms, Modals, etc.)
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│   Services       │ → API client (fetch), interceptores, manejo de tokens
+└────────┬─────────┘
+         ↓
+┌──────────────────┐
+│   Context        │ → Estado global (AuthContext)
+└──────────────────┘
+```
+
+**Protección de rutas:** `/mis-reservas` y otras rutas privadas protegidas por AuthContext con redirección a `/login`.
+
+---
+
+## Estructura del Proyecto
 
 ```
 Prototipo-web-html/
-├── index.html (212 líneas) ← PÁGINA PRINCIPAL
-├── html/
-│   ├── login.html (formulario de login)
-│   ├── mis-reservas.html (gestión de reservas)
-│   ├── canchas/
-│   │   ├── futbol.html
-│   │   ├── tenis.html
-│   │   ├── badminton.html
-│   │   ├── baloncesto.html
-│   │   ├── voleibol.html
-│   │   ├── ping-pong.html
-│   │   ├── balonmano.html
-│   │   └── squash.html
-│   └── en-construccion.html
-├── css/
-│   ├── variables.css (24 líneas) ← COLORES Y TIPOGRAFÍA
-│   ├── menu.css (497 líneas) - Navbar, hero, grid, footer
-│   ├── cancha.css (410 líneas) - Layout 2-columnas, selectors
-│   ├── mis-reservas.css (367 líneas) - Cards, modal
-│   └── style.css (434 líneas) - Login, inputs
-├── js/
-│   ├── cancha.js (442 líneas) ⭐ MÁS COMPLEJO
-│   ├── mis-reservas.js (233 líneas)
-│   ├── index.js (16 líneas)
-│   ├── map.js (70 líneas)
-│   └── config/
-│       └── canchas.json (197 líneas) ← DATOS CLAVE
-└── assets/ (imágenes y logos)
+│
+├── backend/
+│   ├── src/
+│   │   ├── config/           # Configuración (DB, JWT, env)
+│   │   ├── controllers/      # Controladores (auth, reservas, users, upload)
+│   │   ├── db/               # Pool de conexión PostgreSQL
+│   │   ├── middleware/       # Autenticación, validación, error handling
+│   │   ├── models/           # Tipos TypeScript de modelos
+│   │   ├── repositories/     # Acceso a datos (queries SQL)
+│   │   ├── routes/           # Definición de rutas HTTP
+│   │   ├── services/         # Lógica de negocio
+│   │   ├── utils/            # Utilidades (responses, validators)
+│   │   ├── uploads/          # Archivos subidos (imágenes)
+│   │   ├── app.ts            # Configuración Express
+│   │   └── index.ts          # Entry point del servidor
+│   ├── .env.example
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── assets/           # Imágenes, logos, recursos estáticos
+│   │   ├── components/       # Componentes reutilizables (legacy)
+│   │   ├── components_new/   # Nuevos componentes refactorizados
+│   │   ├── context/          # Context API (AuthContext)
+│   │   ├── data/             # Datos mock/estáticos
+│   │   ├── hooks/            # Custom hooks
+│   │   ├── layouts/          # Layouts (MainLayout)
+│   │   ├── pages/            # Páginas (Home, Reservas, Login, etc.)
+│   │   ├── services/         # API client y servicios HTTP
+│   │   ├── types/            # Tipos TypeScript
+│   │   ├── utils/            # Utilidades (formatters, validators)
+│   │   ├── App.tsx
+│   │   ├── AppRouter.tsx     # Configuración de rutas
+│   │   └── main.tsx
+│   ├── .env.example
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── vite.config.ts
+│
+├── documentacion/            # Diagramas, documentos de diseño
+├── PLAN_README.md            # Este documento
+└── README.md                 # README raíz del proyecto
 ```
 
 ---
 
-## 🎨 Diseño Visual y Colores
+## Configuración Inicial
 
-### Paleta de Colores (variables.css)
+### Prerrequisitos
 
-```css
-/* Primarios */
---primary-600: #005cab /* Azul fuerte */ --primary-700: #004080 /* Azul medio */
-  --primary-800: #001d35 /* Azul oscuro */ /* Acento */ --accent: #ff9400
-  /* Naranja vivo */ /* Neutrales */ --light: #f8fafc /* Casi blanco */
-  --dark: #2d3748 /* Gris oscuro */ /* Funcionales */ --success: #10b981
-  /* Verde */ --warning: #f97316 /* Naranja cálido */ --error: #ef4444
-  /* Rojo */;
-```
+- Node.js ≥18.x y npm
+- PostgreSQL ≥14.x instalado y corriendo
+- Git (para control de versiones)
 
-### Tipografía
+### Backend
 
-- **Fuente:** Inter (sans-serif)
-- **Pesos:** 300, 400, 500, 600, 700, 800
-- **Responsive:** Font size ajusta en 3 breakpoints (desktop, tablet 900px, móvil 560px)
+1. **Instalar dependencias:**
+   ```bash
+   cd backend
+   npm install
+   ```
 
-### Responsive Design
+2. **Configurar variables de entorno:**
+   Copia `.env.example` a `.env` y completa:
 
-- **Desktop:** Full width
-- **Tablet (≤900px):** 2 columnas, padding reducido
-- **Móvil (≤560px):** 1 columna, stack vertical
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/unideportes
+   JWT_SECRET=tu_secreto_jwt_super_seguro_cambiar_en_produccion
+    JWT_EXPIRES_IN=8h
+   CORS_ORIGIN=http://localhost:5173
+   ```
 
----
+3. **Crear base de datos:**
+   Ejecuta el script SQL de inicialización (ubicado en `backend/db/` o documentación) para crear tablas (usuarios, instalaciones, franjas_horarias, reservas, etc.).
 
-## 💻 Componentes JavaScript (El Corazón del Proyecto)
+4. **Ejecutar en desarrollo:**
+   ```bash
+   npm run dev
+   ```
+   Backend correrá en `http://localhost:5000`
 
-### 1. **cancha.js** (442 líneas) ⭐ **MÁS IMPORTANTE**
+### Frontend
 
-Este archivo maneja la lógica más compleja del sistema. Cuando un usuario accede a una página de deporte (futbol.html, tenis.html, etc.):
+1. **Instalar dependencias:**
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-**Funciones clave:**
+2. **Configurar variables de entorno:**
+   Copia `.env.example` a `.env` y completa:
 
-- **`loadCanchasConfig()`** → Carga el JSON desde `canchas.json` (fetch)
-- **`renderFieldsFromConfig()`** → Genera dinámicamente botones para cada cancha disponible
-- **`getCurrentSportKey()`** → Detecta qué deporte está viendo (del URL o DOM)
-- **`selectField(fieldId)`** → Selecciona una cancha específica
-- **`selectTime(timeIndex)`** → LA FUNCIÓN MÁS COMPLEJA
-  - Permite seleccionar rangos de horarios (mínimo 1 hora, máximo 3 consecutivas)
-  - Puede:
-    - Nueva selección (clear y elegir)
-    - Extender rango (agregar horas al inicio o fin)
-    - Reducir rango (quitar horas del inicio o fin)
-    - Resetear (vaciar todo)
-  - Bloquea visualmente horarios no seleccionables
-  - Valida límite de 3 horas
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000/api
+   VITE_GOOGLE_MAPS_API_KEY=tu_api_key_google_maps
+   ```
 
-- **`agendarReserva()`** → Recopila: deporte, cancha, fecha, horarios, equipo
-  - Valida que todos los campos estén completos
-  - Guarda en `sessionStorage` (temporal durante la sesión)
-    - Redirige a login
-
-**Conceptos para estudiar:**
-
-- Array operations: `includes()`, `filter()`, `map()`, spread operator
-- DOM manipulation: `querySelector()`, `classList`, `addEventListener()`
-- Data validation (verificar que un horario no esté doble-reservado)
-- Estado global: `selectedTimeIndices` (array que rastrea horarios seleccionados)
-
-### 2. **mis-reservas.js** (233 líneas)
-
-Maneja la interfaz de "Mis Reservas". Permite ver, editar, cancelar reservas guardadas.
-
-**Funciones:**
-
-- **`seedDemoData()`** → Carga datos de demostración (para testing)
-- **`saveData(reservations)`** → Persiste en `localStorage` (permanente)
-- **`renderReservations()`** → Renderiza tarjetas de reservas
-  - Muestra estado (confirmada, pendiente, cancelada) con badges de colores
-  - Botones: Editar, Cancelar
-  - Empty state si no hay reservas
-
-- **`editReserva(id)`** → Abre modal con formulario prellenado
-- **`cancelReserva(id)`** → Pide confirmación, luego elimina
-
-**Conceptos:**
-
-- CRUD básico (Create, Read, Update, Delete)
-- localStorage vs sessionStorage (diferencia: permanencia)
-- Manipulación de arrays: `find()`, `map()`, `splice()`
-- Renderizado condicional (mostrar/ocultar elementos)
-
-### 3. **index.js** (16 líneas)
-
-Muy simple: toggle de visibilidad de contraseña en el login.
-
-```javascript
-// Cambia input type="password" a type="text" y viceversa
-// Icono Phosphor eye ↔ eye-slash
-```
-
-### 4. **map.js** (70 líneas)
-
-Integración con Google Maps API. Muestra 8 marcadores de los 7 escenarios.
-
-- **`initMap()`** → Crea mapa con vista satélite, centrado en la ciudad
-- **`loadGoogleMaps()`** → Carga script asincrónico de Google
-- **`gm_authFailure()`** → Manejo de errores si la API key no es válida
+3. **Ejecutar en desarrollo:**
+   ```bash
+   npm run dev
+   ```
+   Frontend correrá en `http://localhost:5173`
 
 ---
 
-## 📊 canchas.json - La Estructura de Datos
+## API Endpoints
 
-Es el **corazón de los datos dinámicos**. Contiene todos los escenarios, deportes y campos.
+Base URL: `http://localhost:5000/api`
 
+### Autenticación
+
+| Método | Ruta                | Descripción                          | Autenticación |
+|--------|---------------------|--------------------------------------|---------------|
+| POST   | `/auth/register`    | Registrar nuevo usuario              | No            |
+| POST   | `/auth/login`       | Iniciar sesión                       | No            |
+| GET    | `/auth/me`          | Obtener usuario actual               | Sí (JWT)      |
+| POST   | `/auth/logout`      | Cerrar sesión (invalidar token)      | Sí (JWT)      |
+
+**Payload `/auth/register`:**
 ```json
 {
-  "meta": {
-    "version": "1.0",
-    "description": "Configuración del polideportivo"
-  },
-  "escenarios": [
-    {
-      "id": "poli1",
-      "nombre": "Polideportivo 1",
-      "superficie": "cemento",
-      "deportes": ["futbol", "tenis", "badminton"],
-      "imagen": "assets/poli1.jpg"
-    }
-    // ... 6 escenarios más
-  ],
-  "deportes": [
-    {
-      "id": "futbol",
-      "displayName": "Fútbol",
-      "fieldLabel": "Cancha",
-      "fields": [
-        { "id": "fut1", "nombre": "Cancha 1" },
-        { "id": "fut2", "nombre": "Cancha 2" }
-      ]
-    }
-    // ... 7 deportes más
-  ]
+  "nombres": "Juan Carlos",
+  "apellidos": "Pérez Gómez",
+  "correo": "juan.perez@unimagdalena.edu.co",
+  "contrasena": "Password123!"
+}
+```
+*Nota: El registro se restringe a direcciones de correo institucionales con dominio `@unimagdalena.edu.co`.*
+
+**Payload `/auth/login`:**
+```json
+{
+  "correo": "juan.perez@estudiante.edu.co",
+  "contrasena": "Password123!"
 }
 ```
 
-**Cómo funciona:**
-
-1. `cancha.js` hace `fetch('config/canchas.json')`
-2. Parsea el JSON
-3. Valida estructura con `isValidConfigShape()`
-4. Renderiza dinámicamente botones de canchas basado en el deporte actual
-
----
-
-## 🌐 Páginas HTML
-
-### **index.html** (página principal)
-
-- Navbar: Logo + links + botón "Agendar"
-- Hero: Gradiente, frase inspiradora, CTA
-- Grid de 8 deportes: Cards con imagen, nombre, link
-- Mapa: Ubicación de los 7 escenarios
-- Footer: Créditos del equipo
-
-### **Páginas de Canchas** (futbol.html, tenis.html, etc. × 8)
-
-**Layout 2-columnas:**
-
-- **Columna izquierda (35%):**
-  - Imagen hero del deporte
-  - Card de información (nombre, descripción)
-  - Specs (cancha tamaño, superficie)
-  - Contacto
-
-- **Columna derecha (65%):**
-  - Selector dinámico de canchas (botones)
-  - Selector de fecha (5 días de ejemplo)
-  - Selector de horarios (7am-8pm, bloques de 1 hora)
-  - Checkbox "Prestar equipación"
-  - Botón "Agendar Reserva"
-
-**Data attributes importantes:**
-
-- `data-field-id="fut1"` → Identifica cancha
-- `data-time-index="0"` → Índice de horario
-
-### **login.html**
-
-- Header logo
-- Formulario: email, password (con toggle), checkbox "Recordarme", submit
-- Validación visual
-
-### **mis-reservas.html**
-
-- Navbar
-- Header de página
-- Grid de tarjetas con reservas existentes
-- Modal para editar
-- Confirmación para cancelar
-
----
-
-## 📌 Conceptos Clave para Estudiar
-
-### 1. **Separación de responsabilidades**
-
-- HTML = Estructura
-- CSS = Presentación
-- JavaScript = Comportamiento
-
-### 2. **Data-driven UI**
-
-- Los datos (JSON) **generan** la interfaz dinámicamente
-- Si cambias canchas.json, la UI se actualiza automáticamente
-- No hay HTML hardcodeado para cada cancha
-
-### 3. **Client-side storage**
-
-- **sessionStorage:** Temporal (se borra al cerrar pestaña) - Datos de reserva en progreso
-- **localStorage:** Permanente (sobrevive recargas) - Reservas guardadas
-
-### 4. **Array operations**
-
-Muy importante en `cancha.js`:
-
-- `array.includes(x)` → ¿Contiene elemento?
-- `array.filter(fn)` → Nuevos elementos que cumplen condición
-- `array.map(fn)` → Transforma cada elemento
-- `array.splice()` → Inserta/elimina elementos
-- Spread operator `[...array]` → Copia array
-
-### 5. **DOM manipulation**
-
-- `querySelector()` → Busca elemento
-- `classList.add/remove/toggle()` → Modifica clases CSS
-- `addEventListener()` → Escucha clicks/eventos
-- `textContent`, `innerHTML` → Modifica contenido
-
-### 6. **Event listeners y event delegation**
-
-Los horarios se cargan dinámicamente. ¿Cómo sabe JS que pasó? Event delegation:
-
-```javascript
-container.addEventListener("click", (e) => {
-  if (e.target.dataset.timeIndex) {
-    selectTime(e.target.dataset.timeIndex);
+**Respuesta exitosa `/auth/login`:**
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "idUsuario": 1,
+      "nombres": "Juan Carlos",
+      "apellidos": "Pérez Gómez",
+      "correo": "juan.perez@estudiante.edu.co",
+      "rol": "estudiante"
+    }
   }
-});
+}
 ```
 
-### 7. **Validación de datos**
+### Reservas
 
-- Verificar que escenario existe en JSON
-- Verificar que horarios no se solapen
-- Verificar que cancha pertenece a ese deporte
+| Método | Ruta                       | Descripción                     | Autenticación |
+|--------|----------------------------|---------------------------------|---------------|
+| GET    | `/reservas`                | Listar todas las reservas       | Sí (JWT)      |
+| GET    | `/reservas/:id`            | Obtener detalle de reserva      | Sí (JWT)      |
+| POST   | `/reservas`                | Crear nueva reserva             | Sí (JWT)      |
+| PATCH  | `/reservas/:id`            | Modificar reserva existente     | Sí (JWT)      |
+| POST   | `/reservas/:id/cancel`     | Cancelar reserva                | Sí (JWT)      |
 
-### 8. **Responsive design**
+**Payload `POST /reservas`:**
+```json
+{
+  "idInstalacion": 2,
+  "fechaReserva": "2026-04-10",
+  "idFranjaInicio": 3,
+  "idFranjaFin": 5,
+  "equipoSolicitado": "Balones de fútbol (x3)",
+  "notas": "Necesitamos conos para práctica"
+}
+```
 
-- 3 media queries (900px y 560px)
-- Flexbox y Grid
-- Mobile-first approach
+**Payload `PATCH /reservas/:id`:**
+```json
+{
+  "fechaReserva": "2026-04-12",
+  "idFranjaInicio": 4,
+  "idFranjaFin": 6,
+  "equipoSolicitado": "Balones de baloncesto (x2)",
+  "notas": "Cambio de horario aprobado"
+}
+```
 
-### 9. **Accesibilidad (a11y)**
+**Payload `POST /reservas/:id/cancel`:**
+```json
+{
+  "razonCancelacion": "Lluvia pronosticada, posponer evento"
+}
+```
 
-- `aria-label` en botones
-- `role="button"` en elementos interactivos
-- Contraste de colores
-- Navegación por teclado
+### Upload
 
-### 10. **API Fetch y JSON**
+| Método | Ruta                       | Descripción                     | Autenticación |
+|--------|----------------------------|---------------------------------|---------------|
+| POST   | `/upload/image`            | Subir imagen genérica           | Sí (JWT)      |
 
-- `fetch(url)` → Descarga recurso
-- `.json()` → Parsea JSON
-- Manejo de promesas con `.then()` o `async/await`
+**Payload:** `multipart/form-data` con campo `image` (archivo de imagen).
 
----
+**Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "data": {
+    "url": "/uploads/1712234567890-foto.jpg"
+  }
+}
+```
 
-## 🎤 Preguntas Frecuentes para Expo (Q&A Preparadas)
+### Usuarios
 
-### **P: ¿Cómo funciona la selección de horarios?**
+| Método | Ruta                       | Descripción                     | Autenticación |
+|--------|----------------------------|---------------------------------|---------------|
+| PATCH  | `/users/me/photo`          | Actualizar foto de perfil       | Sí (JWT)      |
 
-**R:** El usuario elige rangos de 1-3 horas consecutivas. `selectTime()` rastrea índices en un array. Cada click puede:
+**Payload:** `multipart/form-data` con campo `image`.
 
-- Iniciar nueva selección
-- Extender rango (agregar horas)
-- Reducir rango (quitar horas)
-- Resetear todo
+**Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "data": {
+    "fotoPerfilUrl": "/uploads/1712234567890-perfil.jpg"
+  }
+}
+```
 
-### **P: ¿Dónde se guardan las reservas?**
+### Health
 
-**R:** En dos lugares:
+| Método | Ruta         | Descripción                          | Autenticación |
+|--------|--------------|--------------------------------------|---------------|
+| GET    | `/health`    | Verificar estado del servidor        | No            |
 
-- **Mientras se completa (en progreso):** `sessionStorage` (temporal)
-- **Después de confirmar:** `localStorage` (permanente)
-
-### **P: ¿Por qué sin backend?**
-
-**R:** Es un prototipo educativo. Sin backend significa:
-
-- Rápido de desarrollar (solo frontend)
-- Datos no persisten realmente (localStorage es local al navegador)
-- Listo para mostrar concepto sin infraestructura
-
-### **P: ¿Cómo se generan dinámicamente las canchas?**
-
-**R:** El JSON `canchas.json` contiene la configuración. `cancha.js` lo carga con `fetch()` y renderiza botones según el deporte actual.
-
-### **P: ¿Y si falla Google Maps?**
-
-**R:** Hay `gm_authFailure()` que maneja la falla. Si no hay clave válida, muestra un fallback amigable.
-
-### **P: ¿Es responsive?**
-
-**R:** Sí. 3 breakpoints:
-
-- Desktop (completo)
-- Tablet (≤900px)
-- Móvil (≤560px)
-
----
-
-## ✨ Puntos Fuertes del Proyecto
-
-✅ **Separación clara** HTML/CSS/JS
-✅ **Responsive design** desde el inicio
-✅ **Data-driven UI** (JSON genera interfaz)
-✅ **Lógica compleja** bien implementada (selectTime)
-✅ **Accesibilidad** considerada (aria-\*, keyboard nav)
-✅ **UI/UX intuitiva** (colores, iconografía)
-✅ **Sin dependencias externas** (vanilla JS)
-
----
-
-## 🔮 Oportunidades de Mejora (Para Mención)
-
-- Backend real (Node.js/Express + PostgreSQL)
-- Autenticación real (JWT)
-- Base de datos persistente
-- Sistema de pagos
-- Notificaciones (email, SMS)
-- Reservas recurrentes (entrenamientos)
-- Disponibilidad en tiempo real
-- App móvil (React Native)
-
----
-
-## 📋 Estructura Recomendada para la Exposición (30-40 minutos)
-
-1. **Demo en vivo** (2 min)
-   - Mostrar index.html
-   - Hacer una reserva completa
-   - Ver mis reservas
-
-2. **Arquitectura y Stack** (5 min)
-   - Qué es, por qué estas tecnologías
-   - 21 archivos, estructura
-
-3. **Flujo de Usuario** (8 min)
-   - Desde index → hacer reserva → guardar
-   - Pantalla de mis reservas
-
-4. **Code Walkthrough** (15 min)
-   - Mostrar cancha.js (selectTime es la joya)
-   - Mostrar canchas.json (cómo genera UI)
-   - Mostrar mis-reservas.js (CRUD)
-   - Mostrar CSS (colores, responsive)
-
-5. **Decisiones de Diseño** (5 min)
-   - Por qué localStorage
-   - Por qué 2-columnas
-   - Por qué vanilla JS
-
-6. **Q&A** (5 min)
-   - Responder preguntas
+**Respuesta:**
+```json
+{
+  "success": true,
+  "data": {
+    "status": "OK",
+    "timestamp": "2026-04-04T15:30:00.000Z"
+  }
+}
+```
 
 ---
 
-## 📚 Archivos Clave para Memorizar
+## Scripts Disponibles
 
-**Para la exposición, memoriza ESTOS archivos:**
+### Backend
 
-1. **cancha.js** - La lógica más compleja
-2. **canchas.json** - Datos que generan UI
-3. **mis-reservas.js** - CRUD básico
-4. **index.html** - Estructura principal
-5. **variables.css** - Colores y tipografía
+| Comando           | Descripción                                  |
+|-------------------|----------------------------------------------|
+| `npm run dev`     | Ejecutar servidor en modo desarrollo (hot reload con tsx + nodemon) |
+| `npm run build`   | Compilar TypeScript a JavaScript (carpeta `dist/`) |
+| `npm start`       | Ejecutar servidor compilado (producción)     |
+| `npm run lint`    | Ejecutar ESLint en código fuente            |
+| `npm run typecheck` | Verificar tipos TypeScript sin compilar    |
 
----
+### Frontend
 
-## ✅ Preparación Final
-
-Antes de la expo:
-
-- [ ] Lee esta guía completa
-- [ ] Abre cada archivo en VSCode y explóralo
-- [ ] Prueba hacer una reserva manualmente
-- [ ] Entiende el flujo de selectTime()
-- [ ] Memoriza los 5 archivos clave
-- [ ] Prepara respuestas para las 6 preguntas Q&A
-- [ ] Practica tu demo (2 min rápido)
+| Comando           | Descripción                                  |
+|-------------------|----------------------------------------------|
+| `npm run dev`     | Ejecutar dev server Vite en `http://localhost:5173` |
+| `npm run build`   | Compilar TypeScript + construir build de producción |
+| `npm run lint`    | Ejecutar ESLint en código fuente            |
+| `npm run preview` | Preview del build de producción localmente  |
 
 ---
 
-**Última actualización:** 15 de marzo de 2026
-**Proyecto:** UniDeportes
-**Destino:** Exposición académica + Material de estudio
+## Conceptos Clave
+
+### Franjas Horarias
+Las reservas no usan horas exactas sino **franjas predefinidas** (registros en tabla `franjas_horarias` con `id`, `horaInicio`, `horaFin`). Una reserva abarca desde `idFranjaInicio` hasta `idFranjaFin`, permitiendo reservas de múltiples franjas consecutivas.
+
+**Ejemplo:**
+- Franja 3: 10:00 - 11:00
+- Franja 4: 11:00 - 12:00
+- Franja 5: 12:00 - 13:00
+
+Reserva con `idFranjaInicio=3` y `idFranjaFin=5` bloquea de 10:00 a 13:00.
+
+### Estados de Reserva
+- **pendiente:** Reserva creada, esperando confirmación/revisión.
+- **confirmada:** Reserva aprobada y lista.
+- **cancelada:** Reserva cancelada por usuario o admin (requiere `razonCancelacion`).
+- **completada:** Reserva finalizada (posterior a fecha/hora de fin).
+
+### Autenticación JWT
+El token se devuelve en el body del login. El frontend lo almacena (localStorage/sessionStorage) y lo envía en header `Authorization: Bearer <token>` en cada request protegido. Backend valida token en middleware `authMiddleware`.
+
+### Equipamiento Opcional
+Campo `equipoSolicitado` en reservas permite especificar recursos adicionales (balones, conos, redes, etc.). Es opcional y de texto libre (en versiones futuras puede vincularse a tabla de equipamiento).
+
+### Validación con Zod
+Todos los payloads en controllers se validan con esquemas Zod antes de procesarse. Respuestas de error incluyen detalles de validación.
+
+---
+
+## Guía de Presentación (25-30 min)
+
+### Estructura Recomendada
+
+**1. Introducción (3 min)**
+- Problema: Gestión manual de reservas deportivas en universidades (conflictos, doble reserva, falta de trazabilidad).
+- Solución: Sistema web centralizado con autenticación, validación de disponibilidad, y gestión de estados.
+- Alcance: MVP con auth, CRUD de reservas, franjas horarias, upload de imágenes.
+
+**2. Demostración en Vivo (10-12 min)**
+- Registro de usuario nuevo.
+- Login y visualización de instalaciones disponibles.
+- Creación de reserva con selección de fecha, franjas, equipamiento.
+- Consulta de "Mis Reservas".
+- Modificación de reserva existente.
+- Cancelación de reserva con justificación.
+- (Opcional) Upload de foto de perfil.
+
+**3. Arquitectura y Stack (5-6 min)**
+- Diagrama de arquitectura en capas (mostrar slide o pizarra).
+- Explicación del flujo: Frontend (React) → API REST (Express) → Services → Repositories → PostgreSQL.
+- Mencionar tecnologías clave: TypeScript para type safety, JWT para auth, Zod para validación.
+- Arquitectura frontend: Context API para estado global, React Router para rutas protegidas.
+
+**4. Decisiones Técnicas Relevantes (4-5 min)**
+- **Franjas horarias vs horas libres:** Mayor control, evita solapamientos, facilita reglas de negocio.
+- **Autenticación JWT:** Stateless, escalable, compatible con microservicios futuros.
+- **Validación en capas:** Zod en controllers + validación de negocio en services (double-check).
+- **Upload centralizado:** Ruta `/upload/image` reutilizable para múltiples features.
+- **Estados de reserva:** Flujo claro (pendiente → confirmada/cancelada → completada).
+
+**5. Desafíos y Aprendizajes (3-4 min)**
+- **Desafío 1:** Validación de disponibilidad (verificar solapamiento de franjas en fecha).
+- **Desafío 2:** Manejo de tokens en frontend (refresh, expiración, redirección).
+- **Desafío 3:** Migración de código legacy (vanilla JS) a arquitectura moderna (React + TypeScript).
+- **Aprendizaje:** Importancia de arquitectura en capas para mantenibilidad y testing futuro.
+
+**6. Trabajo Futuro y Q&A (3-4 min)**
+- **Mejoras planificadas:** Notificaciones por correo, calendario visual, roles avanzados (admin, coordinador), reportes de uso.
+- **Escalabilidad:** Migración a Prisma ORM, implementación de cache (Redis), testing automatizado (Jest).
+- **Despliegue:** VPS propio con nginx, SSL (Let's Encrypt), CI/CD con GitHub Actions.
+- Abrir espacio para preguntas.
+
+### Tips de Presentación
+
+- **Preparar datos de prueba:** Usuario demo, instalaciones cargadas, franjas configuradas.
+- **Conexión estable:** Tener backend y frontend corriendo antes de iniciar.
+- **Slides minimalistas:** Diagramas claros, evitar texto excesivo.
+- **Ensayar timing:** Practicar demo para evitar sorpresas en vivo.
+- **Backup plan:** Screenshots o video grabado por si falla conexión/servidor.
+
+---
+
+## Convenciones de Código
+
+### General
+- **Tipado estricto:** TypeScript en modo strict (`noImplicitAny`, `strictNullChecks`).
+- **Naming:** camelCase para variables/funciones, PascalCase para clases/componentes/tipos.
+- **Commits:** Mensajes en inglés con formato `type(scope): description` (ej: `feat(auth): add JWT refresh endpoint`).
+- **Secrets:** Jamás hardcodear credenciales; siempre usar `.env` y `.env.example`.
+
+### Backend
+- **Estructura:** Controller → Service → Repository → Database (nunca saltarse capas).
+- **Responses:** Siempre formato `{ success: boolean, data?: any, message?: string, errors?: any }`.
+- **Error handling:** Middleware centralizado, nunca swallow exceptions.
+- **Logging:** Usar morgan en desarrollo, preparar para Winston/Pino en producción.
+
+### Frontend
+- **Componentes:** Funcionales con hooks, evitar class components.
+- **Props typing:** Siempre definir interfaces para props.
+- **Estado:** Context API para global, useState/useReducer para local.
+- **API calls:** Centralizar en `services/`, manejar loading/error en UI.
+- **Estilos:** Tailwind CSS utility classes, evitar CSS inline salvo excepciones.
+
+---
+
+## Troubleshooting Común
+
+### Backend no inicia
+- **Error:** `ECONNREFUSED` al conectar PostgreSQL.
+  - **Solución:** Verificar que PostgreSQL esté corriendo (`systemctl status postgresql` o equivalente). Revisar `DATABASE_URL` en `.env`.
+
+- **Error:** `JWT_SECRET is not defined`.
+  - **Solución:** Asegurar que `.env` exista y contenga `JWT_SECRET`.
+
+### Frontend no conecta con backend
+- **Error:** CORS policy blocked.
+  - **Solución:** Verificar `CORS_ORIGIN` en backend `.env` coincide con URL del frontend (ej: `http://localhost:5173`).
+
+- **Error:** 401 Unauthorized en endpoints protegidos.
+  - **Solución:** Verificar que token se envíe en header `Authorization: Bearer <token>`. Revisar que token no haya expirado.
+
+### Upload de imágenes falla
+- **Error:** `LIMIT_FILE_SIZE` excedido.
+  - **Solución:** Reducir tamaño de imagen (límite configurado en multer, típicamente 5MB).
+
+- **Error:** Ruta `/uploads/` no accesible.
+  - **Solución:** Verificar que Express sirva estáticos con `express.static('uploads')` en `app.ts`.
+
+---
+
+## Recursos Adicionales
+
+- **Documentación PostgreSQL:** https://www.postgresql.org/docs/
+- **Express.js Docs:** https://expressjs.com/
+- **React Docs:** https://react.dev/
+- **Vite Docs:** https://vite.dev/
+- **JWT.io:** https://jwt.io/ (decodificar/verificar tokens)
+- **Tailwind CSS:** https://tailwindcss.com/docs
+
+---
+
+## Equipo y Contacto
+
+Proyecto desarrollado como trabajo académico en equipo de 2-3 estudiantes de ingeniería/sistemas.
+
+**Licencia:** Proyecto académico sin licencia comercial definida.
+
+**Contribuciones:** Este proyecto es de uso académico. No se aceptan contribuciones externas al equipo asignado.
+
+---
+
+## Changelog Importante
+
+- **v1.0.0 (Actual):** Migración completa a arquitectura React + TypeScript + Express. Implementación de autenticación JWT, CRUD de reservas, upload de imágenes, protección de rutas frontend.
+- **v0.x (Legacy):** Versión inicial en HTML/CSS/JS vanilla (deprecada, código legacy en `frontend/components/`).
+
+---
+
+**Última actualización:** Abril 2026  
+**Versión del documento:** 1.0
