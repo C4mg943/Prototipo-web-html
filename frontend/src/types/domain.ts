@@ -1,10 +1,12 @@
 export interface AuthUser {
   id: number;
   idRol: number;
+  rolCodigo?: string; // Campo adicional del backend (ESTUDIANTE, VIGILANTE, ADMINISTRADOR)
   codigoInstitucional: string;
   nombres: string;
   apellidos: string;
   correo: string;
+  telefono?: string | null;
   fotoPerfilUrl: string | null;
 }
 
@@ -44,6 +46,7 @@ export interface ReservaDto {
   equipoSolicitado: boolean;
   notas: string | null;
   razonCancelacion: string | null;
+  codigoVerificacion: string | null;
   creadoEn: string;
   actualizadoEn: string;
 }

@@ -9,6 +9,38 @@ declare module 'express-serve-static-core' {
   }
 }
 
+// Middleware para requerir rol de administrador
+export function requireAdmin(req: Request, _res: Response, next: NextFunction): void {
+  if (!req.authUser) {
+    next(new ApiError(401, 'No autorizado. Token no proporcionado.'));
+    return;
+  }
+
+  // roleId 3 = ADMINISTRADOR
+  if (req.authUser.roleId !== 3) {
+    next(new ApiError(403, 'Acceso denegado. Se requiere rol de administrador.'));
+    return;
+  }
+
+  next();
+}
+
+// Middleware para requerir rol de vigilante
+export function requireVigilante(req: Request, _res: Response, next: NextFunction): void {
+  if (!req.authUser) {
+    next(new ApiError(401, 'No autorizado. Token no proporcionado.'));
+    return;
+  }
+
+  // roleId 2 = VIGILANTE
+  if (req.authUser.roleId !== 2 && req.authUser.roleId !== 3) {
+    next(new ApiError(403, 'Acceso denegado. Se requiere rol de vigilante o administrador.'));
+    return;
+  }
+
+  next();
+}
+
 export function authMiddleware(req: Request, _res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
 

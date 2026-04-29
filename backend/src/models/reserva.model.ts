@@ -12,6 +12,7 @@ export interface ReservaRecord {
   equipo_solicitado: boolean;
   notas: string | null;
   razon_cancelacion: string | null;
+  codigo_verificacion: string | null;
   creado_en: Date;
   actualizado_en: Date;
 }
@@ -84,6 +85,7 @@ export interface ReservaDto {
   equipoSolicitado: boolean;
   notas: string | null;
   razonCancelacion: string | null;
+  codigoVerificacion: string | null;
   creadoEn: string;
   actualizadoEn: string;
 }

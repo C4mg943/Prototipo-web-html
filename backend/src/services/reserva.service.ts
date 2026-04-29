@@ -194,6 +194,14 @@ export class ReservaService {
       throw new ApiError(400, 'fechaReserva debe tener formato YYYY-MM-DD.');
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const reservaDate = new Date(dateValue + 'T00:00:00');
+
+    if (reservaDate < today) {
+      throw new ApiError(400, 'No se puede realizar una reserva en fecha pasada.');
+    }
+
     return dateValue;
   }
 

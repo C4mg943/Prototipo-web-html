@@ -64,7 +64,22 @@ export function LoginForm() {
       setIsSubmitting(true);
       await login(formData);
 
-      const nextPath = (location.state as NavigationState | null)?.from ?? '/mis-reservas';
+      // Obtener el usuario del localStorage para saber el rol
+      const userData = localStorage.getItem('auth_user');
+      const user = userData ? JSON.parse(userData) : null;
+      
+      // Redirigir según elrol
+      let nextPath = '/mis-reservas'; // default para estudiante
+      if (user) {
+        if (user.idRol === 3) {
+          nextPath = '/admin';
+        } else if (user.idRol === 2) {
+          nextPath = '/vigilante';
+        }
+      } else if ((location.state as NavigationState | null)?.from) {
+        nextPath = (location.state as NavigationState | null)?.from ?? '/mis-reservas';
+      }
+      
       navigate(nextPath, { replace: true });
     } catch (error) {
       setServerError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');

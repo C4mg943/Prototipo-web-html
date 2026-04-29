@@ -12,6 +12,7 @@ const estadoClassMap: Record<string, string> = {
   CANCELADA: 'estado-cancelada',
   COMPLETADA: 'estado-completada',
   NO_PRESENTO: 'estado-no-presento',
+  INICIADA: 'estado-confirmada',
 };
 
 function formatDate(dateIso: string): string {
@@ -27,6 +28,7 @@ export function ReservationCard({ reserva, onEdit }: ReservationCardProps) {
   const estadoClass = estadoClassMap[reserva.estado.codigo] ?? 'estado-pendiente';
   const isEditable = reserva.estado.codigo === 'PENDIENTE' || reserva.estado.codigo === 'CONFIRMADA';
   const timeRangeLabel = formatTimeRange(reserva.franja.idInicio, reserva.franja.idFin);
+  const showCode = (reserva as unknown as { codigoVerificacion?: string }).codigoVerificacion;
 
   return (
     <article className="reserva-card">
@@ -50,6 +52,12 @@ export function ReservationCard({ reserva, onEdit }: ReservationCardProps) {
           <span className="detail-label">Implementos</span>
           <span className="detail-value">{reserva.equipoSolicitado ? 'Sí' : 'No'}</span>
         </div>
+        {showCode && (
+          <div className="detail-item">
+            <span className="detail-label">Código</span>
+            <span className="detail-value font-mono text-lg tracking-widest">{showCode}</span>
+          </div>
+        )}
       </div>
 
       {isEditable ? (

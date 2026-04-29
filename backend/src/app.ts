@@ -10,6 +10,8 @@ import { healthRouter } from './routes/health.routes';
 import { reservaRouter } from './routes/reserva.routes';
 import { uploadRouter } from './routes/upload.routes';
 import { userRouter } from './routes/user.routes';
+import { adminRouter } from './routes/admin.routes';
+import { vigilanteRouter } from './routes/vigilante.routes';
 
 export const app = express();
 
@@ -28,5 +30,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/reservas', reservaRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/users', userRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/vigilante', vigilanteRouter);
 
 app.use(errorMiddleware);

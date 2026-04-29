@@ -11,6 +11,7 @@ import {
   saveAuthSession,
 } from '../services/auth';
 import type { AuthUser } from '../types/domain';
+import { ROL_CODIGOS, esAdmin, esEstudiante, esVigilante, type RolCodigo } from '../types/roles';
 import { AuthContext, type AuthContextValue } from './auth-context';
 
 interface AuthProviderProps {
@@ -69,6 +70,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError('');
   }, []);
 
+  // Verificar si el usuario tiene un rol específico
+  const hasRole = useCallback(
+    (roles: RolCodigo | RolCodigo[]): boolean => {
+      if (!user?.idRol) return false;
+      const codigo = ROL_CODIGOS[user.idRol];
+      if (!codigo) return false;
+
+      if (Array.isArray(roles)) {
+        return roles.includes(codigo);
+      }
+      return codigo === roles;
+    },
+    [user?.idRol],
+  );
+
+  // Verificar si es administrador
+  const isAdmin = useCallback((): boolean => {
+    if (!user?.idRol) return false;
+    return esAdmin(user.idRol);
+  }, [user?.idRol]);
+
+  // Verificar si es vigilante
+  const isVigilante = useCallback((): boolean => {
+    if (!user?.idRol) return false;
+    return esVigilante(user.idRol);
+  }, [user?.idRol]);
+
+  // Verificar si es estudiante
+  const isEstudiante = useCallback((): boolean => {
+    if (!user?.idRol) return false;
+    return esEstudiante(user.idRol);
+  }, [user?.idRol]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -79,8 +113,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       register,
       logout,
       refreshProfile,
+      hasRole,
+      isAdmin,
+      isVigilante,
+      isEstudiante,
     }),
-    [error, isLoading, login, logout, refreshProfile, register, user],
+    [error, hasRole, isAdmin, isEstudiante, isLoading, isVigilante, login, logout, refreshProfile, register, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

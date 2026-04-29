@@ -13,6 +13,7 @@ interface ReservaDetailRow extends ReservaRecord {
   instalacion_nombre: string;
   estado_codigo: string;
   estado_nombre: string;
+  codigo_verificacion: string | null;
 }
 
 interface CreateReservaParams {
@@ -86,6 +87,7 @@ export class ReservaRepository {
   }
 
   async createReserva(params: CreateReservaParams): Promise<ReservaDto> {
+    const codigoVerificacion = this.generateVerificationCode();
     const result = await pool.query<{ id: number }>(
       `
       INSERT INTO reservas (
@@ -100,10 +102,11 @@ export class ReservaRepository {
         duracion_horas,
         equipo_solicitado,
         notas,
+        codigo_verificacion,
         creado_por,
         actualizado_por
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $1, $1)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $1, $1)
       RETURNING id
       `,
       [
@@ -118,6 +121,7 @@ export class ReservaRepository {
         params.duracionHoras,
         params.equipoSolicitado,
         params.notas,
+        codigoVerificacion,
       ],
     );
 
@@ -134,6 +138,10 @@ export class ReservaRepository {
     }
 
     return created;
+  }
+
+  private generateVerificationCode(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
   async listReservasByUser(idUsuario: number): Promise<ReservaDto[]> {
@@ -153,6 +161,7 @@ export class ReservaRepository {
         r.equipo_solicitado,
         r.notas,
         r.razon_cancelacion,
+        r.codigo_verificacion,
         r.creado_en,
         r.actualizado_en,
         i.codigo AS instalacion_codigo,
@@ -188,6 +197,7 @@ export class ReservaRepository {
         r.equipo_solicitado,
         r.notas,
         r.razon_cancelacion,
+        r.codigo_verificacion,
         r.creado_en,
         r.actualizado_en,
         i.codigo AS instalacion_codigo,
@@ -300,6 +310,7 @@ export class ReservaRepository {
       equipoSolicitado: row.equipo_solicitado,
       notas: row.notas,
       razonCancelacion: row.razon_cancelacion,
+      codigoVerificacion: row.codigo_verificacion,
       creadoEn: row.creado_en.toISOString(),
       actualizadoEn: row.actualizado_en.toISOString(),
     };
