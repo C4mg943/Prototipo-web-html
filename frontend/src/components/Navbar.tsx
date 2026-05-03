@@ -162,11 +162,14 @@ const handleLogout = () => {
 
             {isAuthenticated && isMenuOpen ? (
               <div className="avatar-dropdown" role="menu" aria-label="Menú de perfil">
-<button
+                <button
                   type="button"
                   className="avatar-dropdown-item"
                   role="menuitem"
-                  onClick={() => { navigate('/perfil'); setShowDropdown(false); }}
+                  onClick={() => {
+                    navigate('/perfil');
+                    setIsMenuOpen(false);
+                  }}
                 >
                   Mi perfil
                 </button>

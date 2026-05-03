@@ -131,7 +131,7 @@ export class AuthService {
   private toUserDto(user: UserRecord): AuthSuccessResponse['usuario'] {
     return {
       id: Number(user.id),
-      idRol: user.id_rol,
+      idRol: Number(user.id_rol),
       codigoInstitucional: user.codigo_institucional,
       nombres: user.nombre_usuario,
       apellidos: user.apellido_usuario,

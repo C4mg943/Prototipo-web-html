@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-
 interface NavItem {
   path: string;
   label: string;

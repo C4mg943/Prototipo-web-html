@@ -147,6 +147,12 @@ class ReservaService {
         if (!datePattern.test(dateValue)) {
             throw new api_error_1.ApiError(400, 'fechaReserva debe tener formato YYYY-MM-DD.');
         }
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const reservaDate = new Date(dateValue + 'T00:00:00');
+        if (reservaDate < today) {
+            throw new api_error_1.ApiError(400, 'No se puede realizar una reserva en fecha pasada.');
+        }
         return dateValue;
     }
     buildUtcDate(date, time) {

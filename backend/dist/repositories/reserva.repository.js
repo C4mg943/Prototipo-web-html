@@ -32,6 +32,7 @@ class ReservaRepository {
         return result.rows[0] ?? null;
     }
     async createReserva(params) {
+        const codigoVerificacion = this.generateVerificationCode();
         const result = await pool_1.pool.query(`
       INSERT INTO reservas (
         id_usuario,
@@ -45,10 +46,11 @@ class ReservaRepository {
         duracion_horas,
         equipo_solicitado,
         notas,
+        codigo_verificacion,
         creado_por,
         actualizado_por
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $1, $1)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $1, $1)
       RETURNING id
       `, [
             params.idUsuario,
@@ -62,6 +64,7 @@ class ReservaRepository {
             params.duracionHoras,
             params.equipoSolicitado,
             params.notas,
+            codigoVerificacion,
         ]);
         const createdId = result.rows[0]?.id;
         if (!createdId) {
@@ -72,6 +75,9 @@ class ReservaRepository {
             throw new api_error_1.ApiError(500, 'No se pudo recuperar la reserva creada.');
         }
         return created;
+    }
+    generateVerificationCode() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
     }
     async listReservasByUser(idUsuario) {
         const result = await pool_1.pool.query(`
@@ -89,6 +95,7 @@ class ReservaRepository {
         r.equipo_solicitado,
         r.notas,
         r.razon_cancelacion,
+        r.codigo_verificacion,
         r.creado_en,
         r.actualizado_en,
         i.codigo AS instalacion_codigo,
@@ -119,6 +126,7 @@ class ReservaRepository {
         r.equipo_solicitado,
         r.notas,
         r.razon_cancelacion,
+        r.codigo_verificacion,
         r.creado_en,
         r.actualizado_en,
         i.codigo AS instalacion_codigo,
@@ -208,6 +216,7 @@ class ReservaRepository {
             equipoSolicitado: row.equipo_solicitado,
             notas: row.notas,
             razonCancelacion: row.razon_cancelacion,
+            codigoVerificacion: row.codigo_verificacion,
             creadoEn: row.creado_en.toISOString(),
             actualizadoEn: row.actualizado_en.toISOString(),
         };

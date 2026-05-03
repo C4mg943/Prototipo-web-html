@@ -40,5 +40,5 @@ export function AdminDashboardPage() {
     }
   };
 
-  return <AdminDashboard stats={stats} loading={loading} />;
+  return <AdminDashboard stats={stats} />;
 }

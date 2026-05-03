@@ -16,12 +16,6 @@ const colorClasses = {
   purple: 'border-purple-200 bg-purple-50',
 };
 
-const iconColorClasses = {
-  blue: 'text-blue-600',
-  green: 'text-green-600',
-  orange: 'text-orange-600',
-  purple: 'text-purple-600',
-};
 
 function StatCard({ title, value, icon, color, onClick }: StatCardProps) {
   return (
@@ -90,6 +84,7 @@ export function AdminDashboard({
     reservasHoy: 0,
   },
 }: AdminDashboardProps) {
+  const navigate = useNavigate();
   return (
     <div className="space-y-6">
       <div>

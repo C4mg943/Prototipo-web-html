@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './useAuth';
 import {
   ROL_CODIGOS,
   type Permiso,

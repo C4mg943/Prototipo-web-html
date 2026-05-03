@@ -16,6 +16,8 @@ const health_routes_1 = require("./routes/health.routes");
 const reserva_routes_1 = require("./routes/reserva.routes");
 const upload_routes_1 = require("./routes/upload.routes");
 const user_routes_1 = require("./routes/user.routes");
+const admin_routes_1 = require("./routes/admin.routes");
+const vigilante_routes_1 = require("./routes/vigilante.routes");
 exports.app = (0, express_1.default)();
 exports.app.use((0, helmet_1.default)());
 exports.app.use((0, cors_1.default)({
@@ -29,5 +31,7 @@ exports.app.use('/api/auth', auth_routes_1.authRouter);
 exports.app.use('/api/reservas', reserva_routes_1.reservaRouter);
 exports.app.use('/api/upload', upload_routes_1.uploadRouter);
 exports.app.use('/api/users', user_routes_1.userRouter);
+exports.app.use('/api/admin', admin_routes_1.adminRouter);
+exports.app.use('/api/vigilante', vigilante_routes_1.vigilanteRouter);
 exports.app.use(error_middleware_1.errorMiddleware);
 //# sourceMappingURL=app.js.map

@@ -66,14 +66,15 @@ export function LoginForm() {
 
       // Obtener el usuario del localStorage para saber el rol
       const userData = localStorage.getItem('auth_user');
-      const user = userData ? JSON.parse(userData) : null;
+      const user = userData ? (JSON.parse(userData) as { idRol?: number | string } | null) : null;
+      const roleId = typeof user?.idRol === 'string' ? Number(user.idRol) : user?.idRol;
       
       // Redirigir según elrol
       let nextPath = '/mis-reservas'; // default para estudiante
-      if (user) {
-        if (user.idRol === 3) {
+      if (roleId) {
+        if (roleId === 3) {
           nextPath = '/admin';
-        } else if (user.idRol === 2) {
+        } else if (roleId === 2) {
           nextPath = '/vigilante';
         }
       } else if ((location.state as NavigationState | null)?.from) {

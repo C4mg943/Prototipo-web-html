@@ -11,12 +11,12 @@ export interface Rol {
   nombre: string;
 }
 
-// Enum para tipos de rol (usados en frontend)
-export enum TipoRol {
-  ESTUDIANTE = 'ESTUDIANTE',
-  VIGILANTE = 'VIGILANTE',
-  ADMINISTRADOR = 'ADMINISTRADOR',
-}
+// Alias para tipos de rol (usados en frontend)
+export const TipoRol = {
+  ESTUDIANTE: 'ESTUDIANTE',
+  VIGILANTE: 'VIGILANTE',
+  ADMINISTRADOR: 'ADMINISTRADOR',
+} as const;
 
 // Mapeo de códigos numéricos a strings
 export const ROL_CODIGOS: Record<number, RolCodigo> = {

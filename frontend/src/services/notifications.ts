@@ -116,7 +116,7 @@ export async function sendStatusChangeNotice(
   const estadoMensaje =
     nuevoEstado === 'CONFIRMADA'
       ? '✅ Tu reserva ha sido confirmada'
-      : nuevaEstado === 'COMPLETADA'
+      : nuevoEstado === 'COMPLETADA'
         ? '🏆 Tu reserva se ha completado'
         : `📌 Estado: ${nuevoEstado}`;
 

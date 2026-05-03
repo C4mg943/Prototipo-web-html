@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DataTable } from '../../components/admin/DataTable';
 
-interface Franca {
+interface Franja {
   id: number;
   hora_inicio: string;
   hora_fin: string;
@@ -101,17 +101,17 @@ export function AdminFranjasPage() {
     {
       key: 'hora_inicio',
       header: 'Inicio',
-      render: (row: Franca) => row.hora_inicio?.substring(0, 5),
+      render: (row: Franja) => row.hora_inicio?.substring(0, 5),
     },
     {
       key: 'hora_fin',
       header: 'Fin',
-      render: (row: Franca) => row.hora_fin?.substring(0, 5),
+      render: (row: Franja) => row.hora_fin?.substring(0, 5),
     },
     {
       key: 'esta_activo',
       header: 'Estado',
-      render: (row: Franca) => (
+      render: (row: Franja) => (
         <span className={row.esta_activo ? 'text-green-600' : 'text-red-600'}>
           {row.esta_activo ? 'Activa' : 'Inactiva'}
         </span>
@@ -120,7 +120,7 @@ export function AdminFranjasPage() {
     {
       key: 'id',
       header: 'Acciones',
-      render: (row: Franca) => (
+      render: (row: Franja) => (
         <div className="flex gap-2">
           <button
             type="button"

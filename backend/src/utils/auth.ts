@@ -7,7 +7,7 @@ import { AuthUserDto, JwtAccessPayload } from '../models/user.model';
 export function generateAccessToken(user: AuthUserDto): string {
   const payload: JwtAccessPayload = {
     sub: user.id,
-    roleId: user.idRol,
+    roleId: Number(user.idRol),
     email: user.correo,
   };
 
@@ -26,23 +26,47 @@ export function generateAccessToken(user: AuthUserDto): string {
 export function verifyAccessToken(token: string): JwtAccessPayload {
   const decoded = jwt.verify(token, env.jwtSecret);
 
-  if (!isJwtAccessPayload(decoded)) {
+  const normalized = normalizeJwtAccessPayload(decoded);
+
+  if (!normalized) {
     throw new Error('Token inválido.');
   }
 
-  return decoded;
+  return normalized;
 }
 
-function isJwtAccessPayload(payload: unknown): payload is JwtAccessPayload {
+function normalizeJwtAccessPayload(payload: unknown): JwtAccessPayload | null {
   if (!payload || typeof payload !== 'object') {
     return false;
   }
 
   const candidate = payload as Record<string, unknown>;
+  const sub = parseNumericClaim(candidate.sub);
+  const roleId = parseNumericClaim(candidate.roleId);
+  const email = candidate.email;
 
-  return (
-    typeof candidate.sub === 'number' &&
-    typeof candidate.roleId === 'number' &&
-    typeof candidate.email === 'string'
-  );
+  if (sub === null || roleId === null || typeof email !== 'string') {
+    return null;
+  }
+
+  return {
+    sub,
+    roleId,
+    email,
+  };
+}
+
+function parseNumericClaim(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string' && value.trim() !== '') {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return null;
 }
