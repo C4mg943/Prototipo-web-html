@@ -37,7 +37,7 @@ export function verifyAccessToken(token: string): JwtAccessPayload {
 
 function normalizeJwtAccessPayload(payload: unknown): JwtAccessPayload | null {
   if (!payload || typeof payload !== 'object') {
-    return false;
+    return null;
   }
 
   const candidate = payload as Record<string, unknown>;
