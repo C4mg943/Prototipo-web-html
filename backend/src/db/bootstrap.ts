@@ -1,6 +1,23 @@
+import fs from 'fs';
+import path from 'path';
 import { pool } from './pool';
 
 export async function ensureDatabaseCompatibility(): Promise<void> {
+  console.log('Checking database initialization...');
+  try {
+    const sqlPath = path.join(process.cwd(), 'database_init.sql');
+    if (fs.existsSync(sqlPath)) {
+      const sqlContent = fs.readFileSync(sqlPath, 'utf-8');
+      console.log('Running database_init.sql to ensure tables exist...');
+      await pool.query(sqlContent);
+      console.log('Database initialized successfully.');
+    } else {
+      console.log('database_init.sql not found at', sqlPath);
+    }
+  } catch (error) {
+    console.error('Error running database_init.sql:', error);
+  }
+
   await pool.query(`
     ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS foto_perfil_url VARCHAR(500);
