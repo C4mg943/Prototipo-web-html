@@ -1,7 +1,7 @@
 interface NavItem {
   path: string;
   label: string;
-  icon: string;
+  icon?: string;
 }
 
 interface AdminSidebarProps {
@@ -40,7 +40,7 @@ export function AdminSidebar({
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  <span className="text-lg">{item.icon}</span>
+                  {item.icon ? <span className="text-lg">{item.icon}</span> : null}
                   <span className="text-sm font-medium">{item.label}</span>
                 </button>
               </li>

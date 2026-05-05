@@ -44,6 +44,24 @@ export class ReservaService {
     const terminaEn = this.buildUtcDate(fechaReserva, endSlot.hora_fin);
     const notas = this.normalizeOptionalText(input.notas);
 
+    const hasUserReservation = await this.reservaRepository.hasUserReservationOnDate({
+      fechaReserva,
+      idUsuario: userId,
+    });
+    if (hasUserReservation) {
+      throw new ApiError(409, 'Ya tienes una reserva registrada para esta fecha.');
+    }
+
+    const hasConflict = await this.reservaRepository.hasReservationConflict({
+      fechaReserva,
+      idInstalacion: input.idInstalacion,
+      comienzaEn,
+      terminaEn,
+    });
+    if (hasConflict) {
+      throw new ApiError(409, 'La instalación ya está reservada en ese horario.');
+    }
+
     try {
       return await this.reservaRepository.createReserva({
         idUsuario: userId,
@@ -138,6 +156,26 @@ export class ReservaService {
     const comienzaEn = this.buildUtcDate(fechaReserva, startSlot.hora_inicio);
     const terminaEn = this.buildUtcDate(fechaReserva, endSlot.hora_fin);
     const notas = this.normalizeOptionalText(input.notas);
+
+    const hasUserReservation = await this.reservaRepository.hasUserReservationOnDate({
+      fechaReserva,
+      idUsuario: userId,
+      excludeReservaId: reservaId,
+    });
+    if (hasUserReservation) {
+      throw new ApiError(409, 'Ya tienes una reserva registrada para esta fecha.');
+    }
+
+    const hasConflict = await this.reservaRepository.hasReservationConflict({
+      fechaReserva,
+      idInstalacion: reserva.idInstalacion,
+      comienzaEn,
+      terminaEn,
+      excludeReservaId: reservaId,
+    });
+    if (hasConflict) {
+      throw new ApiError(409, 'La instalación ya está reservada en ese horario.');
+    }
 
     try {
       return await this.reservaRepository.updateReserva({

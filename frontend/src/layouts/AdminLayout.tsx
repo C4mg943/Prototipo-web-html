@@ -4,15 +4,15 @@ import { AdminSidebar } from '../components/admin/AdminSidebar';
 import { AdminHeader } from '../components/admin/AdminHeader';
 
 const ADMIN_NAV_ITEMS = [
-  { path: '/admin', label: 'Dashboard', icon: '📊' },
-  { path: '/admin/usuarios', label: 'Usuarios', icon: '👥' },
-  { path: '/admin/escenarios', label: 'Escenarios', icon: '🏟️' },
-  { path: '/admin/instalaciones', label: 'Instalaciones', icon: '🎾' },
-  { path: '/admin/deportes', label: 'Deportes', icon: '⚽' },
-  { path: '/admin/equipamiento', label: 'Equipamiento', icon: '🏅' },
-  { path: '/admin/bloqueos', label: 'Bloqueos', icon: '🚫' },
-  { path: '/admin/franjas', label: 'Franjas Horarias', icon: '🕐' },
-  { path: '/admin/reservas', label: 'Reservas', icon: '📅' },
+  { path: '/admin', label: 'Dashboard' },
+  { path: '/admin/usuarios', label: 'Usuarios' },
+  { path: '/admin/escenarios', label: 'Escenarios' },
+  { path: '/admin/instalaciones', label: 'Instalaciones' },
+  { path: '/admin/deportes', label: 'Deportes' },
+  { path: '/admin/equipamiento', label: 'Equipamiento' },
+  { path: '/admin/bloqueos', label: 'Bloqueos' },
+  { path: '/admin/franjas', label: 'Franjas Horarias' },
+  { path: '/admin/reservas', label: 'Reservas' },
 ];
 
 export function AdminLayout() {

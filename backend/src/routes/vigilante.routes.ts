@@ -5,6 +5,13 @@ import { ApiError } from '../utils/api-error';
 
 export const vigilanteRouter = Router();
 
+function toLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // Helper
 async function executeQuery<T>(
   req: Request,
@@ -115,13 +122,15 @@ vigilanteRouter.post('/reservas/:id/iniciar', authMiddleware, requireVigilante, 
     const reserva = reservaResult.rows[0];
 
     // Verificar que la reserva sea de HOY
-    const today = new Date().toISOString().split('T')[0];
-    if (reserva.fecha_reserva !== today) {
+    const today = toLocalDateString(new Date());
+    const reservaDate = toLocalDateString(new Date(reserva.fecha_reserva));
+    if (reservaDate !== today) {
       throw new ApiError(400, 'Solo se pueden iniciar reservas del día de hoy.');
     }
 
     // Verificar que la reserva esté en estado pendiente o confirmada
-    if (reserva.id_estado !== 1 && reserva.id_estado !== 2) {
+    const estadoId = Number(reserva.id_estado);
+    if (estadoId !== 1 && estadoId !== 2) {
       throw new ApiError(400, 'La reserva no puede ser iniciada. Estado actual no permite inicio.');
     }
 

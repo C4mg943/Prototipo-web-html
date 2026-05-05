@@ -43,6 +43,20 @@ interface UpdateReservaParams {
   actorUserId: number;
 }
 
+interface ReservationConflictParams {
+  fechaReserva: string;
+  idInstalacion: number;
+  comienzaEn: Date;
+  terminaEn: Date;
+  excludeReservaId?: number;
+}
+
+interface UserReservationDateParams {
+  fechaReserva: string;
+  idUsuario: number;
+  excludeReservaId?: number;
+}
+
 export class ReservaRepository {
   async findInstalacionById(idInstalacion: number): Promise<InstalacionRecord | null> {
     const result = await pool.query<InstalacionRecord>(
@@ -138,6 +152,46 @@ export class ReservaRepository {
     }
 
     return created;
+  }
+
+  async hasReservationConflict(params: ReservationConflictParams): Promise<boolean> {
+    const { fechaReserva, idInstalacion, comienzaEn, terminaEn, excludeReservaId } = params;
+    const result = await pool.query(
+      `
+      SELECT 1
+      FROM reservas r
+      LEFT JOIN estados_reserva e ON e.id = r.id_estado
+      WHERE r.fecha_reserva = $1
+        AND r.id_instalacion = $2
+        AND r.comienza_en < $3
+        AND r.termina_en > $4
+        AND (e.codigo IS NULL OR e.codigo NOT IN ('CANCELADA', 'NO_PRESENTO'))
+        AND ($5::BIGINT IS NULL OR r.id <> $5)
+      LIMIT 1
+      `,
+      [fechaReserva, idInstalacion, terminaEn, comienzaEn, excludeReservaId ?? null],
+    );
+
+    return result.rows.length > 0;
+  }
+
+  async hasUserReservationOnDate(params: UserReservationDateParams): Promise<boolean> {
+    const { fechaReserva, idUsuario, excludeReservaId } = params;
+    const result = await pool.query(
+      `
+      SELECT 1
+      FROM reservas r
+      LEFT JOIN estados_reserva e ON e.id = r.id_estado
+      WHERE r.fecha_reserva = $1
+        AND r.id_usuario = $2
+        AND (e.codigo IS NULL OR e.codigo NOT IN ('CANCELADA', 'NO_PRESENTO'))
+        AND ($3::BIGINT IS NULL OR r.id <> $3)
+      LIMIT 1
+      `,
+      [fechaReserva, idUsuario, excludeReservaId ?? null],
+    );
+
+    return result.rows.length > 0;
   }
 
   private generateVerificationCode(): string {

@@ -42,11 +42,10 @@ function StatCard({ title, value, icon, color, onClick }: StatCardProps) {
 interface QuickActionProps {
   title: string;
   description: string;
-  icon: string;
   href: string;
 }
 
-function QuickAction({ title, description, icon, href }: QuickActionProps) {
+function QuickAction({ title, description, href }: QuickActionProps) {
   const navigate = useNavigate();
 
   return (
@@ -55,7 +54,6 @@ function QuickAction({ title, description, icon, href }: QuickActionProps) {
       onClick={() => navigate(href)}
       className="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-4 text-left transition-all hover:border-blue-300 hover:shadow-md"
     >
-      <span className="text-2xl">{icon}</span>
       <div>
         <p className="font-medium text-slate-900">{title}</p>
         <p className="text-sm text-slate-500">{description}</p>
@@ -131,25 +129,21 @@ export function AdminDashboard({
           <QuickAction
             title="Gestionar Usuarios"
             description="Crear, editar, bloquear usuarios"
-            icon="👥"
             href="/admin/usuarios"
           />
           <QuickAction
             title="Gestionar Instalaciones"
             description="Administrar canchas y escenarios"
-            icon="🏟️"
             href="/admin/instalaciones"
           />
           <QuickAction
             title="Gestionar Deportes"
             description="Agregar nuevo deporte"
-            icon="⚽"
             href="/admin/deportes"
           />
           <QuickAction
             title="Ver Reservas"
             description="Ver todas las reservas"
-            icon="📅"
             href="/admin/reservas"
           />
         </div>
