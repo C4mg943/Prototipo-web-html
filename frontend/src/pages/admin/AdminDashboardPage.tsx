@@ -17,7 +17,7 @@ export function AdminDashboardPage() {
     instalacionesDisponibles: 0,
     reservasHoy: 0,
   });
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
