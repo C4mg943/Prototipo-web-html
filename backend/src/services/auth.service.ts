@@ -76,9 +76,14 @@ export class AuthService {
   async googleLogin(idToken: string): Promise<AuthSuccessResponse> {
     try {
       // 1. Verificar el token con Google
+      const clientId = process.env.GOOGLE_CLIENT_ID;
+      if (!clientId) {
+        throw new ApiError(500, 'Google Client ID no configurado en el servidor.');
+      }
+
       const ticket = await googleClient.verifyIdToken({
         idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
+        audience: clientId,
       });
 
       const payload = ticket.getPayload();
@@ -110,21 +115,15 @@ export class AuthService {
 
         user = await this.userRepository.createUser({
           input: {
-            idRol: studentRoleId,
-            codigoInstitucional: institutionalCode,
             nombres,
             apellidos,
             correo: email,
-            contrasena: randomPassword, // no se usa
+            contrasena: randomPassword,
           },
           passwordHash,
+          roleId: studentRoleId,
+          institutionalCode,
         });
-
-        // Actualizamos la foto si Google nos dio una
-        if (fotoPerfilUrl) {
-          // Asumimos que tienes una función para actualizar, si no la tienes omitimos la foto por ahora en BD
-          // await this.userRepository.updatePhoto(user.id, fotoPerfilUrl);
-        }
       } else if (!user.esta_activo) {
         throw new ApiError(403, 'Esta cuenta ha sido desactivada. Contacte al administrador.');
       }
@@ -135,6 +134,20 @@ export class AuthService {
       if (error instanceof ApiError) throw error;
       throw new ApiError(401, 'Error al autenticar con Google. ' + (error as Error).message);
     }
+  }
+
+  async me(userId: number): Promise<AuthSuccessResponse['usuario']> {
+    const user = await this.userRepository.findById(userId);
+    
+    if (!user) {
+      throw new ApiError(404, 'Usuario no encontrado.');
+    }
+    
+    return this.toUserDto(user);
+  }
+
+  async logout(): Promise<{ message: string }> {
+    return { message: 'Sesión cerrada correctamente.' };
   }
 
   private validateRegisterInput(input: RegisterInput): void {
