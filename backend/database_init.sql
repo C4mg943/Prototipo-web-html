@@ -4,8 +4,8 @@
 -- ==========================================
 -- Ejecutar con: psql -U postgres -d unideportes_db -f database_init.sql
 
--- Crear extensión INET si no existe (para dirección IP en auditoría)
-CREATE EXTENSION IF NOT EXISTS inet;
+-- NOTA: Se comenta la extensión inet porque el tipo INET es nativo en Postgres
+-- CREATE EXTENSION IF NOT EXISTS inet;
 
 -- ==========================================
 -- TABLA: roles
