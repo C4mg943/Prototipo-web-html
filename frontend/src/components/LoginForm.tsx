@@ -1,5 +1,6 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../hooks/useAuth';
 
 interface LoginFormData {
@@ -16,7 +17,7 @@ const institutionalDomain = '@unimagdalena.edu.co';
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     correo: '',
     contrasena: '',
@@ -89,6 +90,42 @@ export function LoginForm() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
+    if (!credentialResponse.credential) {
+      setServerError('No se recibió el token de Google.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setServerError('');
+      
+      await loginWithGoogle(credentialResponse.credential);
+      
+      // Redirigir según el rol
+      const userData = localStorage.getItem('auth_user');
+      const user = userData ? (JSON.parse(userData) as { idRol?: number | string } | null) : null;
+      const roleId = typeof user?.idRol === 'string' ? Number(user.idRol) : user?.idRol;
+      
+      let nextPath = '/mis-reservas';
+      if (roleId === 3) {
+        nextPath = '/admin';
+      } else if (roleId === 2) {
+        nextPath = '/vigilante';
+      }
+      
+      navigate(nextPath, { replace: true });
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : 'Error al iniciar sesión con Google.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setServerError('Error al iniciar sesión con Google. Intenta de nuevo.');
+  };
+
   return (
     <form onSubmit={handleSubmit} className="auth-card">
       <h2 className="card-title">Bienvenido</h2>
@@ -131,6 +168,19 @@ export function LoginForm() {
       <button type="submit" className="auth-submit" disabled={!canSubmit || isSubmitting}>
         {isSubmitting ? 'Ingresando...' : 'Ingresar'}
       </button>
+
+      <div className="divider">
+        <span>o</span>
+      </div>
+
+      <div className="google-login-container">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleError}
+          useOneTap
+          width="100%"
+        />
+      </div>
 
       <p className="auth-link auth-note">Tu cuenta institucional ya debe estar habilitada por administración.</p>
 
