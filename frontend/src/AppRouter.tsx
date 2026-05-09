@@ -9,6 +9,7 @@ import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { MyReservationsPage } from './pages/MyReservationsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { UnderConstructionPage } from './pages/UnderConstructionPage';
 // Importar páginas de Admin
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
@@ -35,7 +36,7 @@ export function AppRouter() {
         <Route path="contacto" element={<ContactPage />} />
         <Route path="en-construccion" element={<UnderConstructionPage />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="registro" element={<Navigate to="/login" replace />} />
+        <Route path="registro" element={<RegisterPage />} />
         <Route
           path="mis-reservas"
           element={

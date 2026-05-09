@@ -83,10 +83,12 @@ export function LoginForm() {
       
       navigate(nextPath, { replace: true });
     } catch (error) {
+      console.error('Login error:', error);
       const errorMessage = error instanceof Error ? error.message : 'No se pudo iniciar sesión.';
+      console.log('Error message:', errorMessage);
       
       // Si el backend devuelve USUARIO_NO_REGISTRADO, redirigir al registro
-      if (errorMessage.includes('USUARIO_NO_REGISTRADO')) {
+      if (errorMessage.includes('USUARIO_NO_REGISTRADO') || errorMessage.includes('404')) {
         // Guardar el correo en localStorage para que el registro lo use
         localStorage.setItem('pending_email', formData.correo);
         navigate('/registro', { replace: true });
