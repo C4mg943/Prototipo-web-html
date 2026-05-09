@@ -41,10 +41,6 @@ export async function login(payload: LoginPayload): Promise<ApiEnvelope<AuthPayl
   return request('/api/auth/login', payload);
 }
 
-export async function loginWithGoogle(token: string): Promise<ApiEnvelope<AuthPayload>> {
-  return request('/api/auth/google', { token });
-}
-
 export async function me(): Promise<AuthUser> {
   const token = localStorage.getItem('auth_token');
 

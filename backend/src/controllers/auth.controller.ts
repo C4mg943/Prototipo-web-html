@@ -15,10 +15,6 @@ const loginSchema = z.object({
   contrasena: z.string().min(6),
 });
 
-const googleLoginSchema = z.object({
-  token: z.string().min(1),
-});
-
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -40,20 +36,6 @@ export class AuthController {
     try {
       const payload = loginSchema.parse(req.body);
       const data = await this.authService.login(payload);
-
-      res.status(200).json({
-        success: true,
-        data,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  googleLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const payload = googleLoginSchema.parse(req.body);
-      const data = await this.authService.googleLogin(payload.token);
 
       res.status(200).json({
         success: true,

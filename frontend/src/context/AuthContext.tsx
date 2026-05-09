@@ -3,7 +3,6 @@ import {
   clearAuthSession,
   type LoginPayload,
   login as loginRequest,
-  loginWithGoogle as loginWithGoogleRequest,
   me,
   readAuthToken,
   readAuthUser,
@@ -54,13 +53,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = useCallback(async (payload: LoginPayload) => {
     setError('');
     const response = await loginRequest(payload);
-    saveAuthSession(response.data);
-    setUser(response.data.usuario);
-  }, []);
-
-  const loginWithGoogle = useCallback(async (token: string) => {
-    setError('');
-    const response = await loginWithGoogleRequest(token);
     saveAuthSession(response.data);
     setUser(response.data.usuario);
   }, []);
@@ -118,7 +110,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isLoading,
       error,
       login,
-      loginWithGoogle,
       register,
       logout,
       refreshProfile,
@@ -127,7 +118,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isVigilante,
       isEstudiante,
     }),
-    [error, hasRole, isAdmin, isEstudiante, isLoading, isVigilante, login, loginWithGoogle, logout, refreshProfile, register, user],
+    [error, hasRole, isAdmin, isEstudiante, isLoading, isVigilante, login, logout, refreshProfile, register, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

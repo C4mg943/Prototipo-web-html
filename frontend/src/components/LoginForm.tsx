@@ -1,6 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 interface LoginFormData {
@@ -17,7 +16,7 @@ const institutionalDomain = '@unimagdalena.edu.co';
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginWithGoogle } = useAuth();
+  const { login } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
     correo: '',
     contrasena: '',
@@ -84,46 +83,20 @@ export function LoginForm() {
       
       navigate(nextPath, { replace: true });
     } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'No se pudo iniciar sesión.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
-    if (!credentialResponse.credential) {
-      setServerError('No se recibió el token de Google.');
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-      setServerError('');
+      const errorMessage = error instanceof Error ? error.message : 'No se pudo iniciar sesión.';
       
-      await loginWithGoogle(credentialResponse.credential);
-      
-      // Redirigir según el rol
-      const userData = localStorage.getItem('auth_user');
-      const user = userData ? (JSON.parse(userData) as { idRol?: number | string } | null) : null;
-      const roleId = typeof user?.idRol === 'string' ? Number(user.idRol) : user?.idRol;
-      
-      let nextPath = '/mis-reservas';
-      if (roleId === 3) {
-        nextPath = '/admin';
-      } else if (roleId === 2) {
-        nextPath = '/vigilante';
+      // Si el backend devuelve USUARIO_NO_REGISTRADO, redirigir al registro
+      if (errorMessage.includes('USUARIO_NO_REGISTRADO')) {
+        // Guardar el correo en localStorage para que el registro lo use
+        localStorage.setItem('pending_email', formData.correo);
+        navigate('/registro', { replace: true });
+        return;
       }
       
-      navigate(nextPath, { replace: true });
-    } catch (error) {
-      setServerError(error instanceof Error ? error.message : 'Error al iniciar sesión con Google.');
+      setServerError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleGoogleError = () => {
-    setServerError('Error al iniciar sesión con Google. Intenta de nuevo.');
   };
 
   return (
@@ -169,20 +142,9 @@ export function LoginForm() {
         {isSubmitting ? 'Ingresando...' : 'Ingresar'}
       </button>
 
-      <div className="divider">
-        <span>o</span>
-      </div>
-
-      <div className="google-login-container">
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={handleGoogleError}
-          useOneTap
-          width="100%"
-        />
-      </div>
-
-      <p className="auth-link auth-note">Tu cuenta institucional ya debe estar habilitada por administración.</p>
+      <p className="auth-link">
+        ¿No tienes cuenta? <Link to="/registro">Crear cuenta</Link>
+      </p>
 
       {serverError ? <p className="form-error">{serverError}</p> : null}
     </form>

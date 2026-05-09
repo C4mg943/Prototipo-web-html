@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useMemo, useState, useEffect, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -25,6 +25,15 @@ export function RegisterForm() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
+
+  // Cargar el correo guardado desde el login (si existe)
+  useEffect(() => {
+    const pendingEmail = localStorage.getItem('pending_email');
+    if (pendingEmail) {
+      setFormData((prev) => ({ ...prev, correo: pendingEmail }));
+      localStorage.removeItem('pending_email');
+    }
+  }, []);
 
   const correoError = useMemo(() => {
     if (!submitted && !formData.correo) {
