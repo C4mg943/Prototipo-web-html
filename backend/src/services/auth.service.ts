@@ -75,8 +75,6 @@ export class AuthService {
     return this.buildAuthResponse(user);
   }
 
-  async googleLogin(idToken: string): Promise<AuthSuccessResponse> {
-
   async me(userId: number): Promise<AuthSuccessResponse['usuario']> {
     const user = await this.userRepository.findById(userId);
     
