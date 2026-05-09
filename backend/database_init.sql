@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
   hash_contrasena VARCHAR(255) NOT NULL,
   telefono VARCHAR(20),
   foto_perfil_url VARCHAR(500),
+  two_factor_enabled BOOLEAN DEFAULT FALSE,
+  two_factor_secret VARCHAR(255),
   esta_activo BOOLEAN DEFAULT TRUE,
   ultimo_login_en TIMESTAMP,
   creado_en TIMESTAMP DEFAULT NOW(),

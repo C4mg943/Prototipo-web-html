@@ -70,3 +70,13 @@ function parseNumericClaim(value: unknown): number | null {
 
   return null;
 }
+
+export function createTempToken(payload: object): string {
+  // Token temporal de 5 minutos para el flujo de 2FA
+  return jwt.sign(payload, env.jwtSecret, { expiresIn: '5m' });
+}
+
+export function verifyTempToken(token: string): { userId: number; step: string } {
+  const decoded = jwt.verify(token, env.jwtSecret) as { userId: number; step: string };
+  return decoded;
+}

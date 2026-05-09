@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { ApiError } from '../utils/api-error';
-import { generateAccessToken } from '../utils/auth';
-import { LoginInput, RegisterInput, UserRecord } from '../models/user.model';
+import { generateAccessToken, createTempToken } from '../utils/auth';
+import { emailService } from './email.service';
+import { twoFactorService } from './two-factor.service';
 import { UserRepository } from '../repositories/user.repository';
 
 interface AuthSuccessResponse {
@@ -15,6 +16,8 @@ interface AuthSuccessResponse {
     correo: string;
     fotoPerfilUrl: string | null;
   };
+  requires2FA?: boolean;
+  tempToken?: string;
 }
 
 const institutionalDomain = '@unimagdalena.edu.co';
@@ -71,8 +74,75 @@ export class AuthService {
       throw new ApiError(401, 'Contraseña incorrecta.');
     }
 
+    // Actualizar último login
     await this.userRepository.updateLastLogin(user.id);
+
+    // Verificar si tiene 2FA habilitado - necesitamos buscar el usuario completo con ese campo
+    const userWith2FA = await this.userRepository.findById(user.id);
+    const has2FAEnabled = (userWith2FA as any)?.two_factor_enabled || false;
+
+    // Si tiene 2FA habilitado, retornar requiere verificación adicional
+    if (has2FAEnabled) {
+      const tempToken = createTempToken({ userId: user.id, step: '2fa' });
+      return {
+        token: '', // No retornamos token real todavía
+        usuario: this.toUserDto(user),
+        requires2FA: true,
+        tempToken
+      };
+    }
+
+    // Si no tiene 2FA, retornar token normal
     return this.buildAuthResponse(user);
+  }
+
+  async verify2FA(userId: number, code: string): Promise<AuthSuccessResponse> {
+    const verification = await twoFactorService.verifyCode(userId, code);
+    
+    if (!verification.success) {
+      throw new ApiError(401, verification.message);
+    }
+
+    // Obtener usuario y generar token real
+    const user = await this.userRepository.findById(userId);
+    
+    if (!user) {
+      throw new ApiError(404, 'Usuario no encontrado.');
+    }
+
+    return this.buildAuthResponse(user);
+  }
+
+  async setup2FA(userId: number, email: string): Promise<{ qrCode: string; tempToken: string }> {
+    const result = await twoFactorService.setup2FA(userId, email);
+    return {
+      qrCode: result.qrCode,
+      tempToken: result.tempToken
+    };
+  }
+
+  async confirm2FA(userId: number, code: string): Promise<{ message: string }> {
+    const result = await twoFactorService.verifyAndEnable2FA(userId, code);
+    
+    if (!result.success) {
+      throw new ApiError(400, result.message);
+    }
+
+    return { message: result.message };
+  }
+
+  async disable2FA(userId: number, password: string): Promise<{ message: string }> {
+    const result = await twoFactorService.disable2FA(userId, password);
+    
+    if (!result.success) {
+      throw new ApiError(401, result.message);
+    }
+
+    return { message: result.message };
+  }
+
+  async get2FAStatus(userId: number): Promise<{ enabled: boolean }> {
+    return twoFactorService.get2FAStatus(userId);
   }
 
   async me(userId: number): Promise<AuthSuccessResponse['usuario']> {

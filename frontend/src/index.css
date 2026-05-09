@@ -639,6 +639,12 @@ a {
   margin: 0.35rem 0 0;
 }
 
+.form-help {
+  color: #666;
+  font-size: 0.8rem;
+  margin: 0.35rem 0 0;
+}
+
 .success-text {
   color: var(--success);
   font-size: 0.9rem;
