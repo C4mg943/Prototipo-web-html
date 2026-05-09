@@ -337,7 +337,7 @@ export class ReservaRepository {
     );
 
     return {
-      cancelledCount: result.rowCount,
+      cancelledCount: result.rowCount ?? 0,
       reservations: result.rows.map(r => r.id),
     };
   }
