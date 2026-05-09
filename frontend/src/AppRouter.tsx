@@ -25,6 +25,7 @@ import { AdminFranjasPage } from './pages/admin/AdminFranjasPage';
 import { VigilanteDashboardPage } from './pages/vigilante/VigilanteDashboardPage';
 import { VigilanteReservasPage } from './pages/vigilante/VigilanteReservasPage';
 import { UserProfilePage } from './pages/UserProfilePage';
+import { TwoFactorSetupPage } from './pages/TwoFactorSetupPage';
 
 export function AppRouter() {
   return (
@@ -50,6 +51,14 @@ export function AppRouter() {
           element={
             <ProtectedRoute allowedRoles={['ESTUDIANTE', 'VIGILANTE', 'ADMINISTRADOR']}>
               <UserProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="configurar-2fa"
+          element={
+            <ProtectedRoute allowedRoles={['ESTUDIANTE', 'VIGILANTE', 'ADMINISTRADOR']}>
+              <TwoFactorSetupPage />
             </ProtectedRoute>
           }
         />

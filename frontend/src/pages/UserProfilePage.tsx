@@ -147,6 +147,17 @@ export function UserProfilePage() {
               {profile?.esta_activo ? 'Activo' : 'Inactivo'}
             </span>
           </div>
+          
+          {/* Botón de configuración 2FA */}
+          <div className="flex justify-between items-center py-3 border-b border-slate-200 mt-4">
+            <span className="text-sm text-slate-500">Autenticación de dos factores</span>
+            <button
+              onClick={() => navigate('/configurar-2fa')}
+              className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors"
+            >
+              Configurar
+            </button>
+          </div>
         </div>
 
         {/* Formulario editable */}
