@@ -7,13 +7,18 @@ import {
   UpdateReservaInput,
 } from '../models/reserva.model';
 import { ReservaRepository } from '../repositories/reserva.repository';
+import { UserRepository } from '../repositories/user.repository';
 import { ApiError } from '../utils/api-error';
+import { emailService } from './email.service';
 
 const pendingStatusCode = 'PENDIENTE';
 const canceledStatusCode = 'CANCELADA';
 
 export class ReservaService {
-  constructor(private readonly reservaRepository: ReservaRepository) {}
+  constructor(
+    private readonly reservaRepository: ReservaRepository,
+    private readonly userRepository: UserRepository
+  ) {}
 
   async createReserva(userId: number, input: CreateReservaInput): Promise<ReservaDto> {
     const pendingStatus = await this.findActiveStatusByCode(pendingStatusCode);
@@ -63,7 +68,7 @@ export class ReservaService {
     }
 
     try {
-      return await this.reservaRepository.createReserva({
+      const reserva = await this.reservaRepository.createReserva({
         idUsuario: userId,
         idInstalacion: input.idInstalacion,
         idEstado: pendingStatus.id,
@@ -76,8 +81,60 @@ export class ReservaService {
         equipoSolicitado: input.equipoSolicitado ?? false,
         notas,
       });
+
+      // Enviar correo de confirmación de forma asíncrona (sin bloquear la respuesta)
+      this.sendConfirmationEmail(userId, reserva, instalacion.nombre).catch(err => 
+        console.error('Error sending confirmation email:', err)
+      );
+
+      return reserva;
     } catch (error) {
       throw this.mapDatabaseError(error);
+    }
+  }
+
+  private async sendConfirmationEmail(
+    userId: number, 
+    reserva: ReservaDto, 
+    instalacionNombre: string
+  ): Promise<void> {
+    try {
+      const user = await this.userRepository.findById(userId);
+      if (!user || !user.correo_electronico) return;
+
+      // Convertir timestamps a hora local
+      const comienzaEn = new Date(reserva.comienzaEn);
+      const terminaEn = new Date(reserva.terminaEn);
+      
+      const horaInicio = comienzaEn.toLocaleTimeString('es-CO', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true 
+      });
+      const horaFin = terminaEn.toLocaleTimeString('es-CO', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true 
+      });
+      
+      const fechaReserva = comienzaEn.toLocaleDateString('es-CO', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+
+      await emailService.sendReservationConfirmation(
+        user.correo_electronico,
+        `${user.nombre_usuario} ${user.apellido_usuario}`,
+        fechaReserva,
+        horaInicio,
+        horaFin,
+        instalacionNombre,
+        reserva.codigoVerificacion ?? undefined
+      );
+    } catch (err) {
+      console.error('Failed to send confirmation email:', err);
     }
   }
 

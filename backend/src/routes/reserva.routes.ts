@@ -2,12 +2,14 @@ import { Router } from 'express';
 import { ReservaController } from '../controllers/reserva.controller';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { ReservaRepository } from '../repositories/reserva.repository';
+import { UserRepository } from '../repositories/user.repository';
 import { ReservaService } from '../services/reserva.service';
 
 const reservaRouter = Router();
 
 const reservaRepository = new ReservaRepository();
-const reservaService = new ReservaService(reservaRepository);
+const userRepository = new UserRepository();
+const reservaService = new ReservaService(reservaRepository, userRepository);
 const reservaController = new ReservaController(reservaService);
 
 reservaRouter.use(authMiddleware);
