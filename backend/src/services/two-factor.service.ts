@@ -1,10 +1,7 @@
-import speakeasy from 'speakeasy';
+import * as speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
 import { pool } from '../db/pool';
 import { ApiError } from '../utils/api-error';
-
-const generateSecret = (speakeasy as any).generateSecret || (speakeasy as any).default?.generateSecret;
-const verifyTotp = (speakeasy as any).totp?.verify || (speakeasy as any).default?.totp?.verify;
 
 interface TwoFASetupResult {
   secret: string;
@@ -24,7 +21,7 @@ export class TwoFactorService {
    */
   async setup2FA(userId: number, email: string): Promise<TwoFASetupResult> {
     // Generar secreto TOTP
-    const secret = generateSecret({
+    const secret = speakeasy.generateSecret({
       name: `UniDeportes (${email})`,
       issuer: 'UniDeportes',
       length: 20
@@ -72,7 +69,7 @@ export class TwoFactorService {
     }
 
     // Verificar el código TOTP
-    const verified = verifyTotp({
+    const verified = speakeasy.totp.verify({
       secret,
       encoding: 'base32',
       token: code,
@@ -121,7 +118,7 @@ export class TwoFactorService {
     }
 
     // Verificar el código TOTP
-    const verified = verifyTotp({
+    const verified = speakeasy.totp.verify({
       secret,
       encoding: 'base32',
       token: code,

@@ -1,22 +1,53 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twoFactorService = exports.TwoFactorService = void 0;
-const speakeasy_1 = __importDefault(require("speakeasy"));
+const speakeasy = __importStar(require("speakeasy"));
 const qrcode_1 = __importDefault(require("qrcode"));
 const pool_1 = require("../db/pool");
 const api_error_1 = require("../utils/api-error");
-const generateSecret = speakeasy_1.default.generateSecret || speakeasy_1.default.default?.generateSecret;
-const verifyTotp = speakeasy_1.default.totp?.verify || speakeasy_1.default.default?.totp?.verify;
 class TwoFactorService {
     /**
      * Genera un código QR para configurar 2FA
      */
     async setup2FA(userId, email) {
         // Generar secreto TOTP
-        const secret = generateSecret({
+        const secret = speakeasy.generateSecret({
             name: `UniDeportes (${email})`,
             issuer: 'UniDeportes',
             length: 20
@@ -50,7 +81,7 @@ class TwoFactorService {
             throw new api_error_1.ApiError(400, 'No hay configuración de 2FA iniciada. Primero llama al endpoint de setup.');
         }
         // Verificar el código TOTP
-        const verified = verifyTotp({
+        const verified = speakeasy.totp.verify({
             secret,
             encoding: 'base32',
             token: code,
@@ -86,7 +117,7 @@ class TwoFactorService {
             throw new api_error_1.ApiError(400, 'Error de configuración de 2FA.');
         }
         // Verificar el código TOTP
-        const verified = verifyTotp({
+        const verified = speakeasy.totp.verify({
             secret,
             encoding: 'base32',
             token: code,
