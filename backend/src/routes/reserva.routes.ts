@@ -18,4 +18,7 @@ reservaRouter.post('/', reservaController.create);
 reservaRouter.patch('/:id', reservaController.updateMine);
 reservaRouter.post('/:id/cancel', reservaController.cancelMine);
 
+// Endpoint público para cancelar reservas vencidas (puede llamarse desde un cron job)
+reservaRouter.post('/auto-cancel', reservaController.autoCancelExpired);
+
 export { reservaRouter };

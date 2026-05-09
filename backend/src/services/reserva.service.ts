@@ -120,6 +120,10 @@ export class ReservaService {
     return this.reservaRepository.cancelReserva(reservaId, canceledStatus.id, reason, userId);
   }
 
+  async autoCancelExpiredReservations(): Promise<{ cancelledCount: number; reservations: number[] }> {
+    return this.reservaRepository.autoCancelExpiredReservations();
+  }
+
   async updateMyReserva(userId: number, reservaId: number, input: UpdateReservaInput): Promise<ReservaDto> {
     const reserva = await this.reservaRepository.findReservaById(reservaId);
 

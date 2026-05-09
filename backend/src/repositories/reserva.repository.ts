@@ -299,6 +299,49 @@ export class ReservaRepository {
     return reserva;
   }
 
+  async autoCancelExpiredReservations(): Promise<{ cancelledCount: number; reservations: number[] }> {
+    // Buscar el ID del estado "NO_PRESENTO" (no presentó)
+    const estadoNoPresento = await this.findEstadoByCodigo('NO_PRESENTO');
+    const estadoConfirmado = await this.findEstadoByCodigo('CONFIRMADA');
+    const estadoIniciada = await this.findEstadoByCodigo('INICIADA');
+    const estadoPendiente = await this.findEstadoByCodigo('PENDIENTE');
+
+    if (!estadoNoPresento) {
+      throw new ApiError(500, 'No se encontró el estado NO_PRESENTO.');
+    }
+
+    // Obtener reservas que deben cancelarse (ya pasaron su hora de fin y no están finalizadas)
+    const validStates = [];
+    if (estadoConfirmado) validStates.push(estadoConfirmado.id);
+    if (estadoIniciada) validStates.push(estadoIniciada.id);
+    if (estadoPendiente) validStates.push(estadoPendiente.id);
+
+    if (validStates.length === 0) {
+      return { cancelledCount: 0, reservations: [] };
+    }
+
+    // Buscar reservas que ya pasaron su hora de termine_en
+    const result = await pool.query<{ id: number }>(
+      `
+      UPDATE reservas
+      SET 
+        id_estado = $2,
+        razon_cancelacion = 'Cancelación automática: El usuario no se presentó a la reserva.',
+        actualizado_en = NOW()
+      WHERE 
+        termina_en < NOW()
+        AND id_estado = ANY($3)
+      RETURNING id
+      `,
+      [estadoNoPresento.id, validStates],
+    );
+
+    return {
+      cancelledCount: result.rowCount,
+      reservations: result.rows.map(r => r.id),
+    };
+  }
+
   async updateReserva(params: UpdateReservaParams): Promise<ReservaDto> {
     await pool.query(
       `
