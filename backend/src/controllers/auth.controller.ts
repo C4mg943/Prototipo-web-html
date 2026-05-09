@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { ApiError } from '../utils/api-error';
 import { AuthService } from '../services/auth.service';
+import { verifyTempToken } from '../utils/auth.js';
 
 const registerSchema = z.object({
   nombres: z.string().min(1),
@@ -163,8 +164,6 @@ export class AuthController {
         throw new ApiError(400, 'Se requiere token temporal y código de verificación.');
       }
 
-      // Decodificar el token temporal
-      const { verifyTempToken } = await import('../utils/auth');
       const decoded = verifyTempToken(tempToken);
 
       if (decoded.step !== '2fa') {

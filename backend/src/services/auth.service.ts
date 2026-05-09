@@ -4,6 +4,7 @@ import { generateAccessToken, createTempToken } from '../utils/auth';
 import { emailService } from './email.service';
 import { twoFactorService } from './two-factor.service';
 import { UserRepository } from '../repositories/user.repository';
+import { RegisterInput, LoginInput, UserRecord } from '../models/user.model';
 
 interface AuthSuccessResponse {
   token: string;
