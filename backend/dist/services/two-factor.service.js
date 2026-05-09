@@ -8,13 +8,15 @@ const speakeasy_1 = __importDefault(require("speakeasy"));
 const qrcode_1 = __importDefault(require("qrcode"));
 const pool_1 = require("../db/pool");
 const api_error_1 = require("../utils/api-error");
+const generateSecret = speakeasy_1.default.generateSecret || speakeasy_1.default.default?.generateSecret;
+const verifyTotp = speakeasy_1.default.totp?.verify || speakeasy_1.default.default?.totp?.verify;
 class TwoFactorService {
     /**
      * Genera un código QR para configurar 2FA
      */
     async setup2FA(userId, email) {
         // Generar secreto TOTP
-        const secret = speakeasy_1.default.generateSecret({
+        const secret = generateSecret({
             name: `UniDeportes (${email})`,
             issuer: 'UniDeportes',
             length: 20
@@ -48,7 +50,7 @@ class TwoFactorService {
             throw new api_error_1.ApiError(400, 'No hay configuración de 2FA iniciada. Primero llama al endpoint de setup.');
         }
         // Verificar el código TOTP
-        const verified = speakeasy_1.default.totp.verify({
+        const verified = verifyTotp({
             secret,
             encoding: 'base32',
             token: code,
@@ -84,7 +86,7 @@ class TwoFactorService {
             throw new api_error_1.ApiError(400, 'Error de configuración de 2FA.');
         }
         // Verificar el código TOTP
-        const verified = speakeasy_1.default.totp.verify({
+        const verified = verifyTotp({
             secret,
             encoding: 'base32',
             token: code,
