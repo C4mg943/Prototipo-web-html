@@ -49,6 +49,7 @@ export function TwoFactorSetupPage() {
     try {
       const token = localStorage.getItem('auth_token');
       const res = await fetch(`${API_URL}/api/auth/2fa/setup`, {
+        method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
