@@ -1,7 +1,8 @@
-import * as speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
 import { pool } from '../db/pool';
 import { ApiError } from '../utils/api-error';
+
+const speakeasy = require('speakeasy');
 
 interface TwoFASetupResult {
   secret: string;
