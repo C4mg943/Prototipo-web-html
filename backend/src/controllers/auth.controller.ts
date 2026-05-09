@@ -179,4 +179,31 @@ export class AuthController {
       next(error);
     }
   };
+
+  recoverWith2FA = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { correo, code, newPassword } = req.body;
+
+      if (!correo || !code || !newPassword) {
+        throw new ApiError(400, 'Se requiere correo, código 2FA y nueva contraseña.');
+      }
+
+      if (typeof code !== 'string' || code.length !== 6) {
+        throw new ApiError(400, 'El código debe tener 6 dígitos.');
+      }
+
+      if (typeof newPassword !== 'string' || newPassword.length < 8) {
+        throw new ApiError(400, 'La nueva contraseña debe tener al menos 8 caracteres.');
+      }
+
+      const data = await this.authService.recoverWith2FA(correo, code, newPassword);
+
+      res.status(200).json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

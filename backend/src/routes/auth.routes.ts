@@ -15,6 +15,7 @@ authRouter.post('/login', authController.login);
 
 // Rutas públicas (para verificar 2FA después del login)
 authRouter.post('/verify-2fa', authController.verify2FA);
+authRouter.post('/recover-with-2fa', authController.recoverWith2FA);
 
 // Rutas protegidas (requieren estar logueado)
 authRouter.get('/me', authMiddleware, authController.me);

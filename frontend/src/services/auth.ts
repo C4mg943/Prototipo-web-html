@@ -60,6 +60,25 @@ export async function verify2FA(tempToken: string, code: string): Promise<ApiEnv
   return payload;
 }
 
+export async function recoverWith2FA(correo: string, code: string, newPassword: string): Promise<ApiEnvelope<AuthPayload>> {
+  const response = await fetch(`${API_BASE_URL}/api/auth/recover-with-2fa`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ correo, code, newPassword }),
+  });
+
+  const payload = (await response.json()) as ApiEnvelope<AuthPayload>;
+
+  if (!response.ok || !payload.success) {
+    const firstError = payload.errors?.[0];
+    throw new Error(firstError ?? payload.message ?? 'Error al recuperar contraseña.');
+  }
+
+  return payload;
+}
+
 export async function get2FAStatus(): Promise<{ enabled: boolean }> {
   const token = localStorage.getItem('auth_token');
   

@@ -143,6 +143,44 @@ export class AuthService {
     return twoFactorService.get2FAStatus(userId);
   }
 
+  async recoverWith2FA(correo: string, code: string, newPassword: string): Promise<AuthSuccessResponse> {
+    const normalizedEmail = correo.trim().toLowerCase();
+    const user = await this.userRepository.findByEmail(normalizedEmail);
+
+    if (!user) {
+      throw new ApiError(404, 'Usuario no encontrado.');
+    }
+
+    if (!user.esta_activo) {
+      throw new ApiError(401, 'Esta cuenta ha sido desactivada.');
+    }
+
+    // Verificar que tiene 2FA habilitado
+    const status = await twoFactorService.get2FAStatus(user.id);
+    if (!status.enabled) {
+      throw new ApiError(400, 'Esta cuenta no tiene 2FA habilitado. No se puede recuperar por este método.');
+    }
+
+    // Verificar el código 2FA
+    const verification = await twoFactorService.verifyCode(user.id, code);
+    if (!verification.success) {
+      throw new ApiError(401, 'Código de verificación inválido.');
+    }
+
+    // Validar nueva contraseña
+    if (newPassword.length < 8) {
+      throw new ApiError(400, 'La nueva contraseña debe tener al menos 8 caracteres.');
+    }
+
+    // Actualizar contraseña
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.updatePassword(user.id, passwordHash);
+
+    // Retornar sesión activa
+    await this.userRepository.updateLastLogin(user.id);
+    return this.buildAuthResponse(user);
+  }
+
   async me(userId: number): Promise<AuthSuccessResponse['usuario']> {
     const user = await this.userRepository.findById(userId);
     

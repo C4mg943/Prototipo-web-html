@@ -125,4 +125,15 @@ export class UserRepository {
       [userId, photoUrl],
     );
   }
+
+  async updatePassword(userId: number, passwordHash: string): Promise<void> {
+    await pool.query(
+      `
+      UPDATE usuarios
+      SET hash_contrasena = $2, actualizado_en = NOW()
+      WHERE id = $1
+      `,
+      [userId, passwordHash],
+    );
+  }
 }
