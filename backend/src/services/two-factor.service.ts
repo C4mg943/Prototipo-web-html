@@ -20,9 +20,9 @@ function generateTOTP(secret: string): string {
 }
 
 function verifyTOTP(secret: string, token: string, window: number = 1): boolean {
-  const time = Math.floor(Date.now() / 1000 / 30);
+  const now = Math.floor(Date.now() / 1000);
   for (let i = -window; i <= window; i++) {
-    const t = time + i;
+    const t = now + (i * 30);
     const expected = speakeasy.totp({ key: secret, encoding: 'base32', time: t });
     if (expected === token) {
       return true;

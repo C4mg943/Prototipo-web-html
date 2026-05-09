@@ -115,10 +115,11 @@ export class AuthService {
     return this.buildAuthResponse(user);
   }
 
-  async setup2FA(userId: number, email: string): Promise<{ qrCode: string; tempToken: string }> {
+  async setup2FA(userId: number, email: string): Promise<{ qrCode: string; secret: string; tempToken: string }> {
     const result = await twoFactorService.setup2FA(userId, email);
     return {
       qrCode: result.qrCode,
+      secret: result.secret,
       tempToken: result.tempToken
     };
   }
