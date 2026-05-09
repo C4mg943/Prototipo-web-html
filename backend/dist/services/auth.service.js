@@ -10,6 +10,7 @@ const auth_1 = require("../utils/auth");
 const two_factor_service_1 = require("./two-factor.service");
 const institutionalDomain = '@unimagdalena.edu.co';
 const studentRoleId = 1;
+const twoFactorService = new two_factor_service_1.TwoFactorService();
 class AuthService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -69,7 +70,7 @@ class AuthService {
         return this.buildAuthResponse(user);
     }
     async verify2FA(userId, code) {
-        const verification = await two_factor_service_1.twoFactorService.verifyCode(userId, code);
+        const verification = await twoFactorService.verifyCode(userId, code);
         if (!verification.success) {
             throw new api_error_1.ApiError(401, verification.message);
         }
@@ -81,28 +82,25 @@ class AuthService {
         return this.buildAuthResponse(user);
     }
     async setup2FA(userId, email) {
-        const result = await two_factor_service_1.twoFactorService.setup2FA(userId, email);
+        const result = await twoFactorService.setup2FA(userId, email);
         return {
             qrCode: result.qrCode,
             tempToken: result.tempToken
         };
     }
     async confirm2FA(userId, code) {
-        const result = await two_factor_service_1.twoFactorService.verifyAndEnable2FA(userId, code);
+        const result = await twoFactorService.verifyAndEnable2FA(userId, code);
         if (!result.success) {
             throw new api_error_1.ApiError(400, result.message);
         }
         return { message: result.message };
     }
-    async disable2FA(userId, password) {
-        const result = await two_factor_service_1.twoFactorService.disable2FA(userId, password);
-        if (!result.success) {
-            throw new api_error_1.ApiError(401, result.message);
-        }
-        return { message: result.message };
+    async disable2FA(userId) {
+        await twoFactorService.disable2FA(userId);
+        return { message: '2FA deshabilitado exitosamente.' };
     }
     async get2FAStatus(userId) {
-        return two_factor_service_1.twoFactorService.get2FAStatus(userId);
+        return twoFactorService.get2FAStatus(userId);
     }
     async me(userId) {
         const user = await this.userRepository.findById(userId);

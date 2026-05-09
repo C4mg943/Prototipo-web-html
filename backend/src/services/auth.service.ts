@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { ApiError } from '../utils/api-error';
 import { generateAccessToken, createTempToken } from '../utils/auth';
 import { emailService } from './email.service';
-import { twoFactorService } from './two-factor.service';
+import { TwoFactorService } from './two-factor.service';
 import { UserRepository } from '../repositories/user.repository';
 import { RegisterInput, LoginInput, UserRecord } from '../models/user.model';
 
@@ -23,6 +23,7 @@ interface AuthSuccessResponse {
 
 const institutionalDomain = '@unimagdalena.edu.co';
 const studentRoleId = 1;
+const twoFactorService = new TwoFactorService();
 
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
@@ -132,14 +133,9 @@ export class AuthService {
     return { message: result.message };
   }
 
-  async disable2FA(userId: number, password: string): Promise<{ message: string }> {
-    const result = await twoFactorService.disable2FA(userId, password);
-    
-    if (!result.success) {
-      throw new ApiError(401, result.message);
-    }
-
-    return { message: result.message };
+  async disable2FA(userId: number): Promise<{ message: string }> {
+    await twoFactorService.disable2FA(userId);
+    return { message: '2FA deshabilitado exitosamente.' };
   }
 
   async get2FAStatus(userId: number): Promise<{ enabled: boolean }> {

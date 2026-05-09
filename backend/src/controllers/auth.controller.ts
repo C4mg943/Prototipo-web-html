@@ -127,8 +127,7 @@ export class AuthController {
         throw new ApiError(401, 'No autorizado.');
       }
 
-      const payload = disable2FASchema.parse(req.body);
-      const data = await this.authService.disable2FA(req.authUser.id, payload.contrasena);
+      const data = await this.authService.disable2FA(req.authUser.id);
 
       res.status(200).json({
         success: true,
