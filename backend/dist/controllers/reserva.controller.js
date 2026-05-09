@@ -108,6 +108,19 @@ class ReservaController {
                 next(error);
             }
         };
+        this.autoCancelExpired = async (_req, res, next) => {
+            try {
+                const result = await this.reservaService.autoCancelExpiredReservations();
+                res.status(200).json({
+                    success: true,
+                    message: `Se cancelaron ${result.cancelledCount} reservas vencidas.`,
+                    data: result,
+                });
+            }
+            catch (error) {
+                next(error);
+            }
+        };
     }
 }
 exports.ReservaController = ReservaController;

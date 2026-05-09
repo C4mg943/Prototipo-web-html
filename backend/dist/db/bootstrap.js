@@ -1,8 +1,29 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ensureDatabaseCompatibility = ensureDatabaseCompatibility;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 const pool_1 = require("./pool");
 async function ensureDatabaseCompatibility() {
+    console.log('Checking database initialization...');
+    try {
+        const sqlPath = path_1.default.join(process.cwd(), 'database_init.sql');
+        if (fs_1.default.existsSync(sqlPath)) {
+            const sqlContent = fs_1.default.readFileSync(sqlPath, 'utf-8');
+            console.log('Running database_init.sql to ensure tables exist...');
+            await pool_1.pool.query(sqlContent);
+            console.log('Database initialized successfully.');
+        }
+        else {
+            console.log('database_init.sql not found at', sqlPath);
+        }
+    }
+    catch (error) {
+        console.error('Error running database_init.sql:', error);
+    }
     await pool_1.pool.query(`
     ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS foto_perfil_url VARCHAR(500);

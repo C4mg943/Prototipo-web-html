@@ -505,6 +505,84 @@ exports.adminRouter.get('/equipamiento', auth_middleware_1.authMiddleware, auth_
         return result.rows;
     });
 });
+// POST /api/admin/equipamiento - Crear equipamiento
+exports.adminRouter.post('/equipamiento', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (req, res) => {
+    await executeQuery(req, res, async () => {
+        const { codigo, nombre, cantidad_total, cantidad_disponible, } = req.body;
+        if (!codigo || !nombre) {
+            throw new api_error_1.ApiError(400, 'Código y nombre son obligatorios');
+        }
+        const total = Number(cantidad_total ?? 0);
+        const disponible = Number(cantidad_disponible ?? total);
+        const result = await pool_1.pool.query(`
+      INSERT INTO elementos_equipo (codigo, nombre, cantidad_total, cantidad_disponible)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, codigo, nombre, cantidad_total, cantidad_disponible, esta_activo
+    `, [codigo, nombre, total, disponible]);
+        return result.rows[0];
+    });
+});
+// PATCH /api/admin/equipamiento/:id - Actualizar equipamiento
+exports.adminRouter.patch('/equipamiento/:id', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (req, res) => {
+    await executeQuery(req, res, async () => {
+        const { id } = req.params;
+        const { codigo, nombre, cantidad_total, cantidad_disponible, esta_activo, } = req.body;
+        const updates = [];
+        const values = [];
+        let paramIndex = 1;
+        if (codigo) {
+            updates.push(`codigo = $${paramIndex++}`);
+            values.push(codigo);
+        }
+        if (nombre) {
+            updates.push(`nombre = $${paramIndex++}`);
+            values.push(nombre);
+        }
+        if (cantidad_total !== undefined) {
+            updates.push(`cantidad_total = $${paramIndex++}`);
+            values.push(Number(cantidad_total));
+        }
+        if (cantidad_disponible !== undefined) {
+            updates.push(`cantidad_disponible = $${paramIndex++}`);
+            values.push(Number(cantidad_disponible));
+        }
+        if (esta_activo !== undefined) {
+            updates.push(`esta_activo = $${paramIndex++}`);
+            values.push(Boolean(esta_activo));
+        }
+        if (updates.length === 0) {
+            throw new api_error_1.ApiError(400, 'No hay campos para actualizar');
+        }
+        updates.push('actualizado_en = NOW()');
+        values.push(id);
+        const result = await pool_1.pool.query(`
+      UPDATE elementos_equipo
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING id, codigo, nombre, cantidad_total, cantidad_disponible, esta_activo
+    `, values);
+        if (result.rows.length === 0) {
+            throw new api_error_1.ApiError(404, 'Equipamiento no encontrado');
+        }
+        return result.rows[0];
+    });
+});
+// DELETE /api/admin/equipamiento/:id - Eliminar equipamiento (soft delete)
+exports.adminRouter.delete('/equipamiento/:id', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (req, res) => {
+    await executeQuery(req, res, async () => {
+        const { id } = req.params;
+        const result = await pool_1.pool.query(`
+      UPDATE elementos_equipo
+      SET esta_activo = FALSE, actualizado_en = NOW()
+      WHERE id = $1
+      RETURNING id
+    `, [id]);
+        if (result.rows.length === 0) {
+            throw new api_error_1.ApiError(404, 'Equipamiento no encontrado');
+        }
+        return { success: true, message: 'Equipamiento eliminado correctamente' };
+    });
+});
 // GET /api/admin/bloqueos - Listar bloqueos
 exports.adminRouter.get('/bloqueos', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (_req, res) => {
     await executeQuery(_req, res, async () => {
@@ -515,6 +593,82 @@ exports.adminRouter.get('/bloqueos', auth_middleware_1.authMiddleware, auth_midd
       ORDER BY b.inicia_en DESC
     `);
         return result.rows;
+    });
+});
+// POST /api/admin/bloqueos - Crear bloqueo
+exports.adminRouter.post('/bloqueos', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (req, res) => {
+    await executeQuery(req, res, async () => {
+        const { id_instalacion, razon, inicia_en, termina_en } = req.body;
+        if (!id_instalacion || !razon || !inicia_en || !termina_en) {
+            throw new api_error_1.ApiError(400, 'Todos los campos son obligatorios');
+        }
+        const result = await pool_1.pool.query(`
+      INSERT INTO bloqueos_instalaciones (id_instalacion, razon, inicia_en, termina_en, creado_por, esta_activo)
+      VALUES ($1, $2, $3, $4, $5, TRUE)
+      RETURNING id, id_instalacion, razon, inicia_en, termina_en, esta_activo
+    `, [id_instalacion, razon, inicia_en, termina_en, req.authUser?.id ?? null]);
+        return result.rows[0];
+    });
+});
+// PATCH /api/admin/bloqueos/:id - Actualizar bloqueo
+exports.adminRouter.patch('/bloqueos/:id', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (req, res) => {
+    await executeQuery(req, res, async () => {
+        const { id } = req.params;
+        const { id_instalacion, razon, inicia_en, termina_en, esta_activo } = req.body;
+        const updates = [];
+        const values = [];
+        let paramIndex = 1;
+        if (id_instalacion) {
+            updates.push(`id_instalacion = $${paramIndex++}`);
+            values.push(id_instalacion);
+        }
+        if (razon) {
+            updates.push(`razon = $${paramIndex++}`);
+            values.push(razon);
+        }
+        if (inicia_en) {
+            updates.push(`inicia_en = $${paramIndex++}`);
+            values.push(inicia_en);
+        }
+        if (termina_en) {
+            updates.push(`termina_en = $${paramIndex++}`);
+            values.push(termina_en);
+        }
+        if (esta_activo !== undefined) {
+            updates.push(`esta_activo = $${paramIndex++}`);
+            values.push(Boolean(esta_activo));
+        }
+        if (updates.length === 0) {
+            throw new api_error_1.ApiError(400, 'No hay campos para actualizar');
+        }
+        updates.push('actualizado_en = NOW()');
+        values.push(id);
+        const result = await pool_1.pool.query(`
+      UPDATE bloqueos_instalaciones
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING id, id_instalacion, razon, inicia_en, termina_en, esta_activo
+    `, values);
+        if (result.rows.length === 0) {
+            throw new api_error_1.ApiError(404, 'Bloqueo no encontrado');
+        }
+        return result.rows[0];
+    });
+});
+// DELETE /api/admin/bloqueos/:id - Eliminar bloqueo (soft delete)
+exports.adminRouter.delete('/bloqueos/:id', auth_middleware_1.authMiddleware, auth_middleware_1.requireAdmin, async (req, res) => {
+    await executeQuery(req, res, async () => {
+        const { id } = req.params;
+        const result = await pool_1.pool.query(`
+      UPDATE bloqueos_instalaciones
+      SET esta_activo = FALSE, actualizado_en = NOW()
+      WHERE id = $1
+      RETURNING id
+    `, [id]);
+        if (result.rows.length === 0) {
+            throw new api_error_1.ApiError(404, 'Bloqueo no encontrado');
+        }
+        return { success: true, message: 'Bloqueo eliminado correctamente' };
     });
 });
 // =========================================================

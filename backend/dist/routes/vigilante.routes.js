@@ -6,6 +6,12 @@ const pool_1 = require("../db/pool");
 const auth_middleware_1 = require("../middleware/auth.middleware");
 const api_error_1 = require("../utils/api-error");
 exports.vigilanteRouter = (0, express_1.Router)();
+function toLocalDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
 // Helper
 async function executeQuery(req, res, queryFn) {
     try {
@@ -103,12 +109,14 @@ exports.vigilanteRouter.post('/reservas/:id/iniciar', auth_middleware_1.authMidd
         }
         const reserva = reservaResult.rows[0];
         // Verificar que la reserva sea de HOY
-        const today = new Date().toISOString().split('T')[0];
-        if (reserva.fecha_reserva !== today) {
+        const today = toLocalDateString(new Date());
+        const reservaDate = toLocalDateString(new Date(reserva.fecha_reserva));
+        if (reservaDate !== today) {
             throw new api_error_1.ApiError(400, 'Solo se pueden iniciar reservas del día de hoy.');
         }
         // Verificar que la reserva esté en estado pendiente o confirmada
-        if (reserva.id_estado !== 1 && reserva.id_estado !== 2) {
+        const estadoId = Number(reserva.id_estado);
+        if (estadoId !== 1 && estadoId !== 2) {
             throw new api_error_1.ApiError(400, 'La reserva no puede ser iniciada. Estado actual no permite inicio.');
         }
         // Verificar código - comparación exacta sin trim

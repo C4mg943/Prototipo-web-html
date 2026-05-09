@@ -76,6 +76,36 @@ class ReservaRepository {
         }
         return created;
     }
+    async hasReservationConflict(params) {
+        const { fechaReserva, idInstalacion, comienzaEn, terminaEn, excludeReservaId } = params;
+        const result = await pool_1.pool.query(`
+      SELECT 1
+      FROM reservas r
+      LEFT JOIN estados_reserva e ON e.id = r.id_estado
+      WHERE r.fecha_reserva = $1
+        AND r.id_instalacion = $2
+        AND r.comienza_en < $3
+        AND r.termina_en > $4
+        AND (e.codigo IS NULL OR e.codigo NOT IN ('CANCELADA', 'NO_PRESENTO'))
+        AND ($5::BIGINT IS NULL OR r.id <> $5)
+      LIMIT 1
+      `, [fechaReserva, idInstalacion, terminaEn, comienzaEn, excludeReservaId ?? null]);
+        return result.rows.length > 0;
+    }
+    async hasUserReservationOnDate(params) {
+        const { fechaReserva, idUsuario, excludeReservaId } = params;
+        const result = await pool_1.pool.query(`
+      SELECT 1
+      FROM reservas r
+      LEFT JOIN estados_reserva e ON e.id = r.id_estado
+      WHERE r.fecha_reserva = $1
+        AND r.id_usuario = $2
+        AND (e.codigo IS NULL OR e.codigo NOT IN ('CANCELADA', 'NO_PRESENTO'))
+        AND ($3::BIGINT IS NULL OR r.id <> $3)
+      LIMIT 1
+      `, [fechaReserva, idUsuario, excludeReservaId ?? null]);
+        return result.rows.length > 0;
+    }
     generateVerificationCode() {
         return Math.floor(100000 + Math.random() * 900000).toString();
     }
@@ -157,6 +187,43 @@ class ReservaRepository {
             throw new api_error_1.ApiError(500, 'No se pudo recuperar la reserva cancelada.');
         }
         return reserva;
+    }
+    async autoCancelExpiredReservations() {
+        // Buscar el ID del estado "NO_PRESENTO" (no presentó)
+        const estadoNoPresento = await this.findEstadoByCodigo('NO_PRESENTO');
+        const estadoConfirmado = await this.findEstadoByCodigo('CONFIRMADA');
+        const estadoIniciada = await this.findEstadoByCodigo('INICIADA');
+        const estadoPendiente = await this.findEstadoByCodigo('PENDIENTE');
+        if (!estadoNoPresento) {
+            throw new api_error_1.ApiError(500, 'No se encontró el estado NO_PRESENTO.');
+        }
+        // Obtener reservas que deben cancelarse (ya pasaron su hora de fin y no están finalizadas)
+        const validStates = [];
+        if (estadoConfirmado)
+            validStates.push(estadoConfirmado.id);
+        if (estadoIniciada)
+            validStates.push(estadoIniciada.id);
+        if (estadoPendiente)
+            validStates.push(estadoPendiente.id);
+        if (validStates.length === 0) {
+            return { cancelledCount: 0, reservations: [] };
+        }
+        // Buscar reservas que ya pasaron su hora de termine_en
+        const result = await pool_1.pool.query(`
+      UPDATE reservas
+      SET 
+        id_estado = $2,
+        razon_cancelacion = 'Cancelación automática: El usuario no se presentó a la reserva.',
+        actualizado_en = NOW()
+      WHERE 
+        termina_en < NOW()
+        AND id_estado = ANY($3)
+      RETURNING id
+      `, [estadoNoPresento.id, validStates]);
+        return {
+            cancelledCount: result.rowCount ?? 0,
+            reservations: result.rows.map(r => r.id),
+        };
     }
     async updateReserva(params) {
         await pool_1.pool.query(`

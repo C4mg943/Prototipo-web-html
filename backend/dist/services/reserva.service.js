@@ -2,11 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReservaService = void 0;
 const api_error_1 = require("../utils/api-error");
+const email_service_1 = require("./email.service");
 const pendingStatusCode = 'PENDIENTE';
 const canceledStatusCode = 'CANCELADA';
 class ReservaService {
-    constructor(reservaRepository) {
+    constructor(reservaRepository, userRepository) {
         this.reservaRepository = reservaRepository;
+        this.userRepository = userRepository;
     }
     async createReserva(userId, input) {
         const pendingStatus = await this.findActiveStatusByCode(pendingStatusCode);
@@ -29,8 +31,24 @@ class ReservaService {
         const comienzaEn = this.buildUtcDate(fechaReserva, startSlot.hora_inicio);
         const terminaEn = this.buildUtcDate(fechaReserva, endSlot.hora_fin);
         const notas = this.normalizeOptionalText(input.notas);
+        const hasUserReservation = await this.reservaRepository.hasUserReservationOnDate({
+            fechaReserva,
+            idUsuario: userId,
+        });
+        if (hasUserReservation) {
+            throw new api_error_1.ApiError(409, 'Ya tienes una reserva registrada para esta fecha.');
+        }
+        const hasConflict = await this.reservaRepository.hasReservationConflict({
+            fechaReserva,
+            idInstalacion: input.idInstalacion,
+            comienzaEn,
+            terminaEn,
+        });
+        if (hasConflict) {
+            throw new api_error_1.ApiError(409, 'La instalación ya está reservada en ese horario.');
+        }
         try {
-            return await this.reservaRepository.createReserva({
+            const reserva = await this.reservaRepository.createReserva({
                 idUsuario: userId,
                 idInstalacion: input.idInstalacion,
                 idEstado: pendingStatus.id,
@@ -43,9 +61,42 @@ class ReservaService {
                 equipoSolicitado: input.equipoSolicitado ?? false,
                 notas,
             });
+            // Enviar correo de confirmación de forma asíncrona (sin bloquear la respuesta)
+            this.sendConfirmationEmail(userId, reserva, instalacion.nombre).catch(err => console.error('Error sending confirmation email:', err));
+            return reserva;
         }
         catch (error) {
             throw this.mapDatabaseError(error);
+        }
+    }
+    async sendConfirmationEmail(userId, reserva, instalacionNombre) {
+        try {
+            const user = await this.userRepository.findById(userId);
+            if (!user || !user.correo_electronico)
+                return;
+            // Convertir timestamps a hora local
+            const comienzaEn = new Date(reserva.comienzaEn);
+            const terminaEn = new Date(reserva.terminaEn);
+            const horaInicio = comienzaEn.toLocaleTimeString('es-CO', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            const horaFin = terminaEn.toLocaleTimeString('es-CO', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            const fechaReserva = comienzaEn.toLocaleDateString('es-CO', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            await email_service_1.emailService.sendReservationConfirmation(user.correo_electronico, `${user.nombre_usuario} ${user.apellido_usuario}`, fechaReserva, horaInicio, horaFin, instalacionNombre, reserva.codigoVerificacion ?? undefined);
+        }
+        catch (err) {
+            console.error('Failed to send confirmation email:', err);
         }
     }
     async listMyReservas(userId) {
@@ -75,6 +126,9 @@ class ReservaService {
         const reason = this.normalizeRequiredText(input.razonCancelacion, 'La razón de cancelación es obligatoria.');
         return this.reservaRepository.cancelReserva(reservaId, canceledStatus.id, reason, userId);
     }
+    async autoCancelExpiredReservations() {
+        return this.reservaRepository.autoCancelExpiredReservations();
+    }
     async updateMyReserva(userId, reservaId, input) {
         const reserva = await this.reservaRepository.findReservaById(reservaId);
         if (!reserva) {
@@ -101,6 +155,24 @@ class ReservaService {
         const comienzaEn = this.buildUtcDate(fechaReserva, startSlot.hora_inicio);
         const terminaEn = this.buildUtcDate(fechaReserva, endSlot.hora_fin);
         const notas = this.normalizeOptionalText(input.notas);
+        const hasUserReservation = await this.reservaRepository.hasUserReservationOnDate({
+            fechaReserva,
+            idUsuario: userId,
+            excludeReservaId: reservaId,
+        });
+        if (hasUserReservation) {
+            throw new api_error_1.ApiError(409, 'Ya tienes una reserva registrada para esta fecha.');
+        }
+        const hasConflict = await this.reservaRepository.hasReservationConflict({
+            fechaReserva,
+            idInstalacion: reserva.idInstalacion,
+            comienzaEn,
+            terminaEn,
+            excludeReservaId: reservaId,
+        });
+        if (hasConflict) {
+            throw new api_error_1.ApiError(409, 'La instalación ya está reservada en ese horario.');
+        }
         try {
             return await this.reservaRepository.updateReserva({
                 idReserva: reservaId,
