@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendApiKey = process.env.RESEND_API_KEY;
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 interface EmailOptions {
   to: string;
@@ -20,6 +21,10 @@ class EmailService {
     instalacion: string,
     codigoVerificacion?: string
   ): Promise<boolean> {
+    if (!resend) {
+      console.log('Email service not configured, skipping confirmation email');
+      return false;
+    }
     try {
       await resend.emails.send({
         from: this.fromEmail,
@@ -93,6 +98,9 @@ class EmailService {
     instalacion: string,
     minutosRestantes: number
   ): Promise<boolean> {
+    if (!resend) {
+      return false;
+    }
     try {
       await resend.emails.send({
         from: this.fromEmail,
@@ -159,6 +167,9 @@ class EmailService {
     instalacion: string,
     razon?: string
   ): Promise<boolean> {
+    if (!resend) {
+      return false;
+    }
     try {
       await resend.emails.send({
         from: this.fromEmail,
