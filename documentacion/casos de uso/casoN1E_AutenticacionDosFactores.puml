@@ -1,0 +1,65 @@
+@startuml AutenticacionDosFactores
+!theme plain
+left to right direction
+
+actor ":Usuario" as usuario
+actor ":Sistema" as sistema
+actor ":Google Authenticator" as authApp
+
+rectangle "Módulo 2FA" {
+    usecase "UC-1E1: Configurar 2FA" as uc1
+    usecase "UC-1E2: Escanear código QR" as uc2
+    usecase "UC-1E3: Confirmar activación con código" as uc3
+    usecase "UC-1E4: Iniciar sesión con 2FA" as uc4
+    usecase "UC-1E5: Verificar código TOTP" as uc5
+    usecase "UC-1E6: Deshabilitar 2FA" as uc6
+}
+
+usuario --> uc1 : "Solicita configurar"
+uc1 --> sistema : "Genera secreto TOTP"
+sistema --> uc1 : "Retorna código QR"
+
+uc1 .> uc2 : "incluye"
+uc2 --> authApp : "Escanea QR"
+authApp --> uc2 : "Genera códigos TOTP"
+
+usuario --> uc3 : "Ingresa código de 6 dígitos"
+uc3 --> sistema : "Verifica código TOTP"
+sistema --> uc3 : "Confirma validación"
+uc3 --> uc1 : "Habilita 2FA"
+
+usuario --> uc4 : "Ingresa credenciales"
+uc4 --> sistema : "Autentica usuario"
+sistema --> uc4 : "Solicita código 2FA"
+
+uc4 .> uc5 : "incluye"
+uc5 --> authApp : "Obtiene código actual"
+authApp --> uc5 : "Retorna código TOTP"
+usuario --> uc5 : "Ingresa código"
+uc5 --> sistema : "Verifica código"
+sistema --> uc5 : "Confirma validación"
+
+usuario --> uc6 : "Solicita deshabilitar"
+uc6 --> sistema : "Desactiva 2FA"
+sistema --> uc6 : "Elimina secreto"
+
+note right of uc1
+  Caso de uso PLUS:
+  Integración con librería externa
+  (speakeasy para TOTP)
+end note
+
+note right of uc5
+  Lógica de negocio compleja:
+  - Generador TOTP RFC 6238
+  - Verificación con ventana de tolerancia
+  - Almacenamiento seguro del secreto
+end note
+
+note right of uc4
+  Flujo de autenticación en dos pasos:
+  1. Credenciales tradicionales
+  2. Código TOTP dinámico
+end note
+
+@enduml

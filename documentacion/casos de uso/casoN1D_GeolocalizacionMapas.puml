@@ -1,0 +1,40 @@
+@startuml GeolocalizacionMapas
+!theme plain
+left to right direction
+
+actor ":Usuario" as usuario
+actor ":Google Maps API" as googleMaps
+
+rectangle "Módulo de Geolocalización" {
+    usecase "UC-D1: Visualizar mapa interactivo" as uc1
+    usecase "UC-D2: Mostrar marcadores de escenarios" as uc2
+    usecase "UC-D3: Ver información de escenario" as uc3
+}
+
+usuario --> uc1 : "Accede a página de ubicación"
+uc1 --> googleMaps : "Carga script de Google Maps"
+googleMaps --> uc1 : "Renderiza mapa satelital"
+
+usuario --> uc2 : "Visualiza lista de escenarios"
+uc2 --> googleMaps : "Muestra marcadores en mapa"
+googleMaps --> uc2 : "Posiciones geográficas de escenarios"
+
+usuario --> uc3 : "Hace clic en marcador"
+uc3 --> googleMaps : "Solicita detalles del punto"
+googleMaps --> uc3 : "Muestra nombre y ubicación"
+
+note right of uc1
+  INTEGRACIÓN DE TERCEROS:
+  API externa de Google Maps
+  Requiere API Key válida
+  Licencia de uso
+end note
+
+note right of uc2
+  INTERACTIVIDAD AVANZADA:
+  - Mapa satelital interactivo
+  - Marcadores personalizados
+  - Zoom y navegación
+end note
+
+@enduml
